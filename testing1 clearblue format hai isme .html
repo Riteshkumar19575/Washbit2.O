@@ -1,0 +1,2170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Washbit — Book trusted care partners near you</title>
+<meta name="description" content="Washbit connects you with verified local partners for laundry, dry cleaning, ironing, stitching, shoe & bag cleaning, and carpet & blanket cleaning." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2246%22 fill=%22%230F6E63%22/><circle cx=%2250%22 cy=%2250%22 r=%2226%22 fill=%22none%22 stroke=%22%23F5F8F6%22 stroke-width=%228%22/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     FIREBASE SDKs (compat build — works as plain scripts, no bundler)
+     ============================================================ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+<!-- Your existing Firebase project config lives in this separate file -->
+<script>
+window.firebaseConfig = {
+  apiKey: "AIzaSyCTRcKdkXqQqOLv2J_eqZzTIIoM1oGoJWs",
+  authDomain: "washbit-ec9a5.firebaseapp.com",
+  projectId: "washbit-ec9a5",
+  storageBucket: "washbit-ec9a5.firebasestorage.app",
+  messagingSenderId: "1037207790971",
+  appId: "1:1037207790971:web:d548ec0543d4f14f64c9de"
+};
+</script>
+<style>
+/* ================================================================
+   WASHBIT — DESIGN SYSTEM (v2 — matches washbit.in brand)
+   Palette: clean light-blue background, confident blue primary,
+   teal accent (mirrors the "Wash[blue]bit[teal]" wordmark), deep
+   navy for high-contrast sections (steps, footer).
+   Type: Poppins (display, bold/confident) + Inter (body/UI) + JetBrains Mono (order codes)
+   ================================================================ */
+:root{
+  --bg:#F6F9FC;
+  --bg-soft:#EEF3FA;
+  --surface:#FFFFFF;
+  --ink:#0B1526;
+  --ink-soft:#57697F;
+  --ink-faint:#93A2B8;
+  --line:#E3E9F2;
+  --line-soft:#EEF3FA;
+  --navy:#0B1E3F;
+  --navy-soft:#122A54;
+  --primary:#2563EB;
+  --primary-dark:#1D4ED8;
+  --primary-light:#EAF1FE;
+  --accent:#14B8A6;
+  --accent-dark:#0D9488;
+  --accent-light:#E3FBF7;
+  --success:#16A34A;
+  --success-light:#E7F8EC;
+  --warning:#D97706;
+  --warning-light:#FCF1DE;
+  --danger:#DC2626;
+  --danger-light:#FDEAEA;
+  --radius-sm:10px;
+  --radius:16px;
+  --radius-lg:26px;
+  --shadow-sm:0 2px 8px rgba(11,21,38,.06);
+  --shadow:0 10px 30px rgba(37,99,235,.12);
+  --shadow-lg:0 24px 60px rgba(11,21,38,.20);
+  --font-display:'Poppins','Inter',sans-serif;
+  --font-body:'Inter',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --header-h:72px;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:var(--font-body);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+input,select,textarea{font-family:inherit;font-size:15px;}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0 0 .4em;font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+p{margin:0 0 1em;color:var(--ink-soft);}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px;}
+.mono{font-family:var(--font-mono);}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}}
+
+/* Layout helpers */
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px;}
+.grid{display:grid;gap:20px;}
+.flex{display:flex;}
+.between{justify-content:space-between;}
+.center{align-items:center;}
+.muted{color:var(--ink-soft);}
+.faint{color:var(--ink-faint);}
+.hidden{display:none !important;}
+.section{padding:56px 0;}
+.section-tight{padding:32px 0;}
+.eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--primary);font-weight:600;}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:999px;padding:12px 22px;font-weight:600;font-size:14.5px;transition:transform .15s ease,box-shadow .15s ease,background .15s ease;white-space:nowrap;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 8px 20px rgba(15,110,99,.25);}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-accent{background:var(--accent);color:#fff;box-shadow:0 8px 20px rgba(255,122,80,.32);}
+.btn-accent:hover{background:var(--accent-dark);}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary);}
+.btn-light{background:var(--primary-light);color:var(--primary-dark);}
+.btn-light:hover{background:#d8ece7;}
+.btn-danger{background:var(--danger-light);color:var(--danger);}
+.btn-danger:hover{background:#f7d4d4;}
+.btn-sm{padding:8px 15px;font-size:13px;border-radius:999px;}
+.btn-block{width:100%;}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none;}
+.icon-btn{background:transparent;border:none;width:38px;height:38px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:18px;}
+.icon-btn:hover{background:var(--bg-soft);color:var(--ink);}
+
+/* Cards & surfaces */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);}
+.card-pad{padding:22px;}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px;box-shadow:var(--shadow-sm);}
+
+/* Porthole signature motif */
+.porthole{position:relative;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--primary-light);overflow:hidden;box-shadow:inset 0 0 0 5px #fff, inset 0 0 0 7px var(--line), 0 6px 16px rgba(37,99,235,.15);}
+.porthole img{width:100%;height:100%;object-fit:cover;}
+.porthole-lg{width:118px;height:118px;font-size:44px;}
+.porthole-md{width:64px;height:64px;font-size:26px;}
+.porthole-sm{width:40px;height:40px;font-size:17px;}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:5px 11px;border-radius:999px;letter-spacing:.01em;}
+.badge-success{background:var(--success-light);color:var(--success);}
+.badge-warning{background:var(--warning-light);color:var(--warning);}
+.badge-danger{background:var(--danger-light);color:var(--danger);}
+.badge-primary{background:var(--primary-light);color:var(--primary-dark);}
+.badge-accent{background:var(--accent-light);color:var(--accent-dark);}
+.badge-neutral{background:var(--bg-soft);color:var(--ink-soft);}
+
+/* Forms */
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:7px;color:var(--ink);}
+.field .hint{font-size:12px;color:var(--ink-faint);margin-top:5px;}
+.input,.select,.textarea{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);transition:border-color .15s;}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--primary);}
+.textarea{resize:vertical;min-height:90px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+@media (max-width:640px){.row2,.row3{grid-template-columns:1fr;}}
+.check-row{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--ink-soft);}
+.error-text{color:var(--danger);font-size:13px;margin-top:6px;}
+
+/* Header */
+#site-header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);height:var(--header-h);}
+#site-header .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:18px;}
+.logo{display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:700;font-size:23px;color:var(--ink);letter-spacing:-.01em;}
+.logo .brand-bit{background:linear-gradient(90deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.logo .brand-dot{color:var(--accent);}
+.logo .mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;box-shadow:0 6px 14px rgba(37,99,235,.30);}
+.logo .mark::after{content:'';width:12px;height:12px;border-radius:50%;background:#fff;opacity:.92;}
+nav.main-nav{display:flex;align-items:center;gap:4px;}
+nav.main-nav a{padding:9px 14px;border-radius:999px;font-weight:600;font-size:14px;color:var(--ink-soft);}
+nav.main-nav a:hover{background:var(--bg-soft);color:var(--ink);}
+nav.main-nav a.active{background:var(--primary-light);color:var(--primary-dark);}
+.header-actions{display:flex;align-items:center;gap:10px;}
+.avatar-btn{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:999px;padding:5px 14px 5px 5px;background:#fff;}
+.avatar-btn .porthole{width:30px;height:30px;font-size:13px;}
+.menu-toggle{display:none;background:none;border:none;font-size:22px;padding:6px;}
+@media (max-width:900px){
+  nav.main-nav{position:fixed;inset:var(--header-h) 0 0 0;background:var(--bg);flex-direction:column;align-items:stretch;padding:16px;gap:8px;transform:translateX(100%);transition:transform .2s ease;overflow:auto;}
+  nav.main-nav.open{transform:translateX(0);}
+  nav.main-nav a{padding:14px 16px;font-size:16px;}
+  .menu-toggle{display:block;}
+}
+
+/* Hero — premium marketplace style: bold headline left, floating stat cards right */
+.hero{position:relative;padding:60px 0 46px;overflow:hidden;background:
+    radial-gradient(720px 420px at 88% 8%, rgba(20,184,166,.10), transparent 60%),
+    radial-gradient(760px 460px at 8% 92%, rgba(37,99,235,.08), transparent 60%);}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr;}}
+.hero .pill-badge{display:inline-flex;align-items:center;gap:7px;background:var(--primary-light);color:var(--primary-dark);font-weight:700;font-size:12.5px;letter-spacing:.03em;padding:7px 14px;border-radius:999px;margin-bottom:16px;}
+.hero h1{font-size:clamp(32px,4.6vw,50px);color:var(--ink);}
+.hero h1 .accent-word{background:linear-gradient(90deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero .sub{font-size:16.5px;max-width:520px;}
+.hero-visual{position:relative;border-radius:28px;overflow:hidden;min-height:380px;background:linear-gradient(155deg,var(--navy) 0%,var(--primary-dark) 55%,var(--accent-dark) 130%);box-shadow:var(--shadow-lg);}
+.hero-image{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    z-index:0;
+}
+.hero-visual::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.25)),
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,.14), transparent 55%),
+        radial-gradient(circle at 80% 85%, rgba(20,184,166,.35), transparent 50%);
+    z-index:1;
+}
+.hero-visual-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:100px;opacity:.9;filter:drop-shadow(0 18px 30px rgba(0,0,0,.25));}
+.chip-float{position:absolute;background:#fff;border-radius:16px;padding:11px 15px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px; z-index:2;}
+.chip-float .cf-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.chip-float .cf-label{font-size:11px;color:var(--ink-faint);font-weight:600;}
+.chip-float .cf-value{font-size:14.5px;font-weight:700;color:var(--ink);}
+.hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 22px;}
+.hero-badges .badge{background:#fff;border:1px solid var(--line);color:var(--ink-soft);box-shadow:var(--shadow-sm);}
+.hero-badges .badge b{color:var(--accent-dark);}
+
+/* Search bar — location is part of search, not a filter */
+.search-card{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:10px;display:grid;grid-template-columns:auto 1fr 1fr auto;gap:8px;align-items:center;margin-top:8px;}
+@media (max-width:700px){.search-card{grid-template-columns:1fr;}}
+.search-card .input{border:none;background:var(--bg-soft);border-radius:12px;}
+.search-card .input:focus{outline:2px solid var(--primary);}
+.locate-btn{width:44px;height:44px;border-radius:12px;background:var(--accent-light);color:var(--accent-dark);border:none;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:background .15s,transform .15s;}
+.locate-btn:hover{background:var(--accent);color:#fff;}
+.locate-btn:active{transform:scale(.94);}
+@media (max-width:700px){.locate-btn{width:100%;border-radius:10px;gap:8px;}.locate-btn .lb-text{display:inline;font-weight:700;font-size:13.5px;}}
+.locate-btn .lb-text{display:none;}
+
+/* Category grid */
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+@media (max-width:820px){.cat-grid{grid-template-columns:repeat(2,1fr);}}
+.cat-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px 16px;text-align:left;transition:transform .15s,box-shadow .15s;}
+.cat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:transparent;}
+.cat-card .icon-tile{width:46px;height:46px;border-radius:12px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;}
+.cat-card strong{display:block;font-size:14.5px;}
+.cat-card span{font-size:12px;color:var(--ink-faint);}
+
+/* Partner card */
+.partner-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:flex;gap:16px;transition:box-shadow .15s,transform .15s;}
+.partner-card:hover{box-shadow:var(--shadow);transform:translateY(-2px);}
+.partner-card .body{flex:1;min-width:0;}
+.partner-card .top-row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
+.partner-card h3{font-size:18px;margin:0 0 3px;}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0;}
+.tag-chip{background:var(--bg-soft);color:var(--ink-soft);font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;}
+.rating-row{display:flex;align-items:center;gap:5px;font-size:13.5px;font-weight:700;color:var(--ink);}
+.rating-row .stars{color:#F0A73C;}
+.dist-pill{font-size:12px;color:var(--ink-soft);font-weight:600;}
+
+/* Star rating input */
+.star-input{display:flex;gap:6px;font-size:30px;}
+.star-input span{cursor:pointer;color:var(--line);}
+.star-input span.active{color:#F0A73C;}
+
+/* Filters bar — chips are for partner filtering only; location lives in search */
+.filters-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:22px;}
+.filter-chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 15px;font-size:13px;font-weight:600;color:var(--ink-soft);}
+.filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.sort-select-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.sort-select-wrap label{font-size:12.5px;font-weight:600;color:var(--ink-faint);}
+.sort-select{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 30px 8px 14px;font-size:13px;font-weight:600;color:var(--ink-soft);}
+@media (max-width:640px){.sort-select-wrap{margin-left:0;}}
+
+/* Dark "How it works" section, matching washbit.in's navy steps block */
+.dark-section{background:linear-gradient(160deg,var(--navy),var(--navy-soft));color:#dce6f5;position:relative;overflow:hidden;}
+.dark-section::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 300px at 85% 0%, rgba(20,184,166,.16), transparent 60%);}
+.dark-section h2{color:#fff;}
+.dark-section .eyebrow{color:var(--accent);}
+.dark-section p{color:#a9bad6;}
+.dark-step{position:relative;text-align:center;}
+.dark-step .num-circle{width:46px;height:46px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:var(--font-display);margin:0 auto 14px;box-shadow:0 8px 20px rgba(37,99,235,.4);}
+.dark-step h4{color:#fff;font-family:var(--font-display);font-size:15.5px;margin-bottom:6px;}
+.dark-step p{font-size:13px;color:#9db1cf;margin:0;}
+
+/* Steps */
+.steps{display:flex;gap:0;margin-bottom:26px;flex-wrap:wrap;}
+.step{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink-faint);padding-right:18px;}
+.step .num{width:24px;height:24px;border-radius:50%;background:var(--bg-soft);display:flex;align-items:center;justify-content:center;font-size:12px;}
+.step.active{color:var(--primary-dark);}
+.step.active .num{background:var(--primary);color:#fff;}
+.step.done .num{background:var(--success);color:#fff;}
+
+/* Dashboard shell */
+.dash-shell{display:grid;grid-template-columns:230px 1fr;gap:26px;align-items:start;}
+@media (max-width:820px){.dash-shell{grid-template-columns:1fr;}}
+.dash-nav{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:12px;position:sticky;top:calc(var(--header-h) + 16px);}
+.dash-nav a{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:11px;font-weight:600;font-size:14px;color:var(--ink-soft);margin-bottom:2px;}
+.dash-nav a:hover{background:var(--bg-soft);}
+.dash-nav a.active{background:var(--primary);color:#fff;}
+@media (max-width:820px){.dash-nav{display:flex;overflow:auto;gap:6px;position:static;}.dash-nav a{white-space:nowrap;}}
+
+/* Order timeline */
+.timeline{list-style:none;margin:0;padding:0;}
+.timeline li{position:relative;padding:0 0 22px 30px;border-left:2px solid var(--line);margin-left:9px;}
+.timeline li:last-child{border-color:transparent;padding-bottom:0;}
+.timeline li::before{content:'';position:absolute;left:-9px;top:0;width:16px;height:16px;border-radius:50%;background:var(--line);border:3px solid #fff;box-shadow:0 0 0 1px var(--line);}
+.timeline li.done::before{background:var(--primary);box-shadow:0 0 0 1px var(--primary);}
+.timeline li.current::before{background:var(--accent);box-shadow:0 0 0 4px var(--accent-light);}
+.timeline .t-label{font-weight:700;font-size:14.5px;}
+.timeline .t-time{font-size:12.5px;color:var(--ink-faint);}
+
+/* Tables (admin) */
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff;}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:640px;}
+th,td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--line-soft);white-space:nowrap;}
+th{background:var(--bg-soft);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);}
+tr:last-child td{border-bottom:none;}
+td.wrap-cell{white-space:normal;}
+
+/* Stat cards */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+@media (max-width:820px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+.stat-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;}
+.stat-card .num{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--primary-dark);}
+.stat-card .lbl{font-size:12.5px;color:var(--ink-faint);font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+
+/* Modal */
+#modal-root{position:fixed;inset:0;z-index:200;display:none;}
+#modal-root.open{display:block;}
+.modal-backdrop{position:absolute;inset:0;background:rgba(18,33,29,.5);backdrop-filter:blur(2px);}
+.modal-box{position:relative;max-width:520px;margin:6vh auto;background:#fff;border-radius:var(--radius-lg);padding:26px;max-height:88vh;overflow:auto;box-shadow:var(--shadow-lg);}
+.modal-box.wide{max-width:760px;}
+.modal-close{position:absolute;top:16px;right:16px;}
+
+/* Toasts */
+#toast-root{position:fixed;top:18px;right:18px;z-index:300;display:flex;flex-direction:column;gap:10px;}
+.toast{background:var(--ink);color:#fff;padding:13px 18px;border-radius:12px;font-size:14px;font-weight:600;box-shadow:var(--shadow-lg);min-width:220px;animation:toastIn .25s ease;}
+.toast.success{background:var(--success);}
+.toast.error{background:var(--danger);}
+.toast.info{background:var(--primary-dark);}
+@keyframes toastIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+
+/* Empty state */
+.empty-state{text-align:center;padding:56px 20px;color:var(--ink-faint);}
+.empty-state .porthole{margin:0 auto 16px;}
+.empty-state h3{color:var(--ink);}
+
+/* Loader */
+.loader{display:flex;align-items:center;justify-content:center;padding:80px 20px;}
+.spinner{width:36px;height:36px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--primary);animation:spin 0.8s linear infinite;}
+
+/* Footer */
+footer{background:var(--navy);color:#c7d4ea;padding:44px 0 26px;margin-top:60px;}
+footer a{color:#c7d4ea;opacity:.85;}
+footer a:hover{opacity:1;text-decoration:underline;}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:24px;margin-bottom:28px;}
+@media (max-width:700px){.foot-grid{grid-template-columns:1fr 1fr;}}
+.foot-grid h4{color:#fff;font-size:13px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;font-family:var(--font-body);}
+.foot-grid p{color:#93a7c8;}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:18px;font-size:13px;color:#7d92b8;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+
+/* Setup screen (missing firebase config) */
+.setup-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px;}
+.setup-card{max-width:640px;background:#fff;border-radius:var(--radius-lg);padding:36px;box-shadow:var(--shadow-lg);}
+.setup-card ol{padding-left:20px;color:var(--ink-soft);}
+.setup-card li{margin-bottom:8px;}
+.setup-card code{background:var(--bg-soft);padding:2px 7px;border-radius:6px;font-family:var(--font-mono);font-size:13px;}
+
+.divider{height:1px;background:var(--line);margin:22px 0;border:none;}
+.price-tag{font-family:var(--font-display);font-weight:700;color:var(--primary-dark);}
+.gap-8{display:flex;gap:8px;}
+.gap-8.wrap{flex-wrap:wrap;}
+.text-center{text-align:center;}
+.w-full{width:100%;}
+.small{font-size:12.5px;}
+.clickable{cursor:pointer;}
+.link-btn{background:none;border:none;color:var(--primary);font-weight:700;font-size:13.5px;padding:0;}
+.link-btn:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div id="toast-root"></div>
+<div id="modal-root"><div class="modal-backdrop" data-action="close-modal"></div><div class="modal-box" id="modal-box"></div></div>
+
+<header id="site-header">
+  <div class="wrap">
+    <a href="#/" class="logo"><span class="mark"></span> Wash<span class="brand-bit">bit</span><span class="brand-dot">.</span></a>
+    <nav class="main-nav" id="main-nav">
+      <a href="#/partners" data-route="/partners">Find partners</a>
+      <a href="#/how-it-works" data-route="/how-it-works">How it works</a>
+      <a href="#/partner-onboarding" data-route="/partner-onboarding">Become a partner</a>
+      <a href="#/dashboard/orders" data-route="/dashboard" id="nav-customer-dash" class="hidden">My orders</a>
+      <a href="#/partner/orders" data-route="/partner" id="nav-partner-dash" class="hidden">Partner dashboard</a>
+      <a href="#/admin/overview" data-route="/admin" id="nav-admin-dash" class="hidden">Admin</a>
+    </nav>
+    <div class="header-actions">
+      <div id="auth-actions" class="gap-8">
+        <a href="#/login" class="btn btn-ghost btn-sm">Log in</a>
+        <a href="#/signup" class="btn btn-primary btn-sm">Sign up</a>
+      </div>
+      <div id="user-actions" class="hidden">
+        <div class="avatar-btn clickable" data-action="toggle-user-menu">
+          <div class="porthole" id="header-avatar">🙂</div>
+          <span class="small" id="header-name" style="font-weight:700;">Account</span>
+        </div>
+      </div>
+      <button class="menu-toggle" data-action="toggle-nav">☰</button>
+    </div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="logo" style="color:#fff;margin-bottom:10px;"><span class="mark"></span>Wash<span class="brand-bit">bit</span><span class="brand-dot">.</span></div>
+        <p>The booking layer for local care services — laundry, dry cleaning, stitching, shoe & bag care, carpets and blankets — done by verified partners near you.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <p><a href="#/partners?cat=laundry">Laundry</a></p>
+        <p><a href="#/partners?cat=dry_cleaning">Dry cleaning</a></p>
+        <p><a href="#/partners?cat=stitching">Stitching & alteration</a></p>
+        <p><a href="#/partners?cat=carpet_cleaning">Carpet cleaning</a></p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <p><a href="#/how-it-works">How it works</a></p>
+        <p><a href="#/partner-onboarding">Become a partner</a></p>
+        <p><a href="#/login">Log in</a></p>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <p><a href="#/dashboard/orders">Track an order</a></p>
+        <p>support@washbit.app</p>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year"></span> Washbit. All rights reserved.</span>
+      <span>Built for verified local service partners.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ================================================================
+   WASHBIT APP — single-file production build
+   Sections: Constants → Utils → Firebase → Data layer → Router →
+   Views → Event delegation → Init
+   ================================================================ */
+'use strict';
+
+/* ---------------------------------------------------------------
+   0. CONSTANTS
+   --------------------------------------------------------------- */
+const DEFAULT_SERVICES = [
+  {id:'laundry',          name:'Laundry',                   icon:'👕', unit:'per kg',    order:1},
+  {id:'dry_cleaning',     name:'Dry Cleaning',              icon:'🧥', unit:'per item',  order:2},
+  {id:'ironing',          name:'Ironing',                   icon:'🔥', unit:'per item',  order:3},
+  {id:'stitching',        name:'Stitching & Alteration',    icon:'🧵', unit:'per item',  order:4},
+  {id:'shoe_cleaning',    name:'Shoe Cleaning & Repair',    icon:'👟', unit:'per pair',  order:5},
+  {id:'bag_cleaning',     name:'Bag Cleaning',              icon:'👜', unit:'per item',  order:6},
+  {id:'carpet_cleaning',  name:'Carpet Cleaning',           icon:'🧹', unit:'per sq.ft', order:7},
+  {id:'blanket_cleaning', name:'Blanket Cleaning',          icon:'🛏️', unit:'per item',  order:8},
+];
+
+const ORDER_STATUSES = ['placed','accepted','picked_up','in_progress','ready','delivered'];
+const STATUS_LABEL = {
+  placed:'Placed', accepted:'Accepted by partner', picked_up:'Picked up', in_progress:'In progress',
+  ready:'Ready for delivery', delivered:'Delivered', cancelled:'Cancelled'
+};
+const NEXT_STATUS = {
+  placed:'accepted', accepted:'picked_up', picked_up:'in_progress', in_progress:'ready', ready:'delivered'
+};
+const NEXT_ACTION_LABEL = {
+  placed:'Accept order', accepted:'Mark picked up', picked_up:'Mark in progress', in_progress:'Mark ready', ready:'Mark delivered'
+};
+
+/* ---------------------------------------------------------------
+   1. UTILITIES
+   --------------------------------------------------------------- */
+const $  = (sel, el) => (el||document).querySelector(sel);
+const $$ = (sel, el) => Array.from((el||document).querySelectorAll(sel));
+const esc = (s) => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rupee = (n) => '₹' + Number(n||0).toLocaleString('en-IN', {maximumFractionDigits:2});
+const fmtDate = (ts) => {
+  if(!ts) return '—';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) + ' · ' + d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+};
+const fmtDateShort = (ts) => {
+  if(!ts) return '—';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-IN', {day:'numeric', month:'short'});
+};
+function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
+function haversineKm(lat1, lon1, lat2, lon2){
+  if([lat1,lon1,lat2,lon2].some(v => v==null || isNaN(v))) return null;
+  const R=6371, toRad = d => d*Math.PI/180;
+  const dLat = toRad(lat2-lat1), dLon = toRad(lon2-lon1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+function toast(msg, type){
+  type = type || 'info';
+  const root = $('#toast-root');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  root.appendChild(el);
+  setTimeout(() => { el.style.transition='opacity .3s'; el.style.opacity='0'; setTimeout(()=>el.remove(), 300); }, 3200);
+}
+function openModal(html, wide){
+  $('#modal-box').innerHTML = '<button class="icon-btn modal-close" data-action="close-modal">✕</button>' + html;
+  $('#modal-box').className = 'modal-box' + (wide ? ' wide' : '');
+  $('#modal-root').classList.add('open');
+}
+function closeModal(){ $('#modal-root').classList.remove('open'); $('#modal-box').innerHTML=''; }
+function serviceIcon(id){ const s = state.services.find(x=>x.id===id); return s ? s.icon : '🧺'; }
+function serviceName(id){ const s = state.services.find(x=>x.id===id); return s ? s.name : id; }
+function serviceUnit(id){ const s = state.services.find(x=>x.id===id); return s ? s.unit : ''; }
+function stars(rating){
+  rating = Math.round(rating || 0);
+  let out = '';
+  for(let i=1;i<=5;i++) out += i<=rating ? '★' : '☆';
+  return out;
+}
+function qs(name){ const params = new URLSearchParams((location.hash.split('?')[1]||'')); return params.get(name); }
+
+/* ---------------------------------------------------------------
+   2. FIREBASE INIT
+   --------------------------------------------------------------- */
+let auth, db, storage, fbReady = false;
+function firebaseConfigured(){
+  const c = window.firebaseConfig;
+  return c && c.apiKey && !String(c.apiKey).includes('PASTE');
+}
+function initFirebase(){
+  if(!firebaseConfigured()) return false;
+  try{
+    firebase.initializeApp(window.firebaseConfig);
+    auth = firebase.auth();
+    db = firebase.firestore();
+    storage = firebase.storage();
+    fbReady = true;
+    return true;
+  }catch(e){
+    console.error('Firebase init failed', e);
+    return false;
+  }
+}
+
+/* ---------------------------------------------------------------
+   3. GLOBAL STATE
+   --------------------------------------------------------------- */
+const state = {
+  user: null,        // firebase auth user
+  profile: null,      // users/{uid} doc
+  partnerDoc: null,   // partners doc owned by this user, if any
+  services: DEFAULT_SERVICES.slice(),
+  geo: null,          // {lat,lng} from browser geolocation
+  route: '',
+  authReady: false,
+};
+
+/* ---------------------------------------------------------------
+   4. DATA LAYER (Firestore / Storage wrappers)
+   --------------------------------------------------------------- */
+const Data = {
+  async seedServicesIfEmpty(){
+    const snap = await db.collection('services').limit(1).get();
+    if(!snap.empty) return;
+    const batch = db.batch();
+    DEFAULT_SERVICES.forEach(s => {
+      const ref = db.collection('services').doc(s.id);
+      batch.set(ref, {name:s.name, icon:s.icon, unit:s.unit, order:s.order, active:true});
+    });
+    await batch.commit();
+  },
+  async loadServices(){
+    try{
+      const snap = await db.collection('services').orderBy('order').get();
+      if(snap.empty){ state.services = DEFAULT_SERVICES.slice(); return; }
+      state.services = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    }catch(e){ state.services = DEFAULT_SERVICES.slice(); }
+  },
+  async getUserProfile(uid){
+    const doc = await db.collection('users').doc(uid).get();
+    return doc.exists ? {id:doc.id, ...doc.data()} : null;
+  },
+  async createUserProfile(uid, data){
+    await db.collection('users').doc(uid).set({
+      role:'customer', disabled:false, addresses:[], createdAt: firebase.firestore.FieldValue.serverTimestamp(), ...data
+    });
+  },
+  async updateUserProfile(uid, data){ await db.collection('users').doc(uid).update(data); },
+  async getPartnerByUid(uid){
+    const snap = await db.collection('partners').where('uid','==',uid).limit(1).get();
+    return snap.empty ? null : {id:snap.docs[0].id, ...snap.docs[0].data()};
+  },
+  async getPartner(id){
+    const doc = await db.collection('partners').doc(id).get();
+    return doc.exists ? {id:doc.id, ...doc.data()} : null;
+  },
+  async listPartners(filters){
+    filters = filters || {};
+    let q = db.collection('partners').where('status','==','approved');
+    let docs;
+    try{ docs = (await q.get()).docs; }catch(e){ docs = (await db.collection('partners').get()).docs.filter(d=>d.data().status==='approved'); }
+    let partners = docs.map(d => ({id:d.id, ...d.data()}));
+    if(filters.category) partners = partners.filter(p => (p.categories||[]).includes(filters.category));
+    if(filters.text){
+      const t = filters.text.toLowerCase();
+      partners = partners.filter(p => (p.businessName||'').toLowerCase().includes(t) || (p.city||'').toLowerCase().includes(t) || (p.area||'').toLowerCase().includes(t) || (p.pincode||'').includes(t));
+    }
+    if(filters.city) partners = partners.filter(p => (p.city||'').toLowerCase() === filters.city.toLowerCase());
+    // distance
+    if(filters.geo){
+      partners.forEach(p => { p._distance = haversineKm(filters.geo.lat, filters.geo.lng, p.lat, p.lng); });
+    }
+    // sort: featured+priority first always, then by chosen sort
+    partners.sort((a,b) => {
+      if(!!b.featured !== !!a.featured) return (b.featured?1:0) - (a.featured?1:0);
+      return (a.priority ?? 100) - (b.priority ?? 100);
+    });
+    if(filters.sort === 'distance' && filters.geo){
+      partners.sort((a,b) => (a._distance ?? 9999) - (b._distance ?? 9999));
+    }else if(filters.sort === 'rating'){
+      partners.sort((a,b) => (b.rating||0) - (a.rating||0));
+    }else if(filters.sort === 'price_low'){
+      partners.sort((a,b) => minPrice(a) - minPrice(b));
+    }
+    return partners;
+  },
+  async listAllPartnersAdmin(){
+    const snap = await db.collection('partners').orderBy('createdAt','desc').get();
+    return snap.docs.map(d => ({id:d.id, ...d.data()}));
+  },
+  async createPartnerApplication(data){
+    const ref = await db.collection('partners').add({
+      status:'pending', featured:false, priority:100, isOpen:true, rating:0, ratingCount:0,
+      categories:[], prices:{}, createdAt: firebase.firestore.FieldValue.serverTimestamp(), ...data
+    });
+    return ref.id;
+  },
+  async updatePartner(id, data){ await db.collection('partners').doc(id).update(data); },
+  async deletePartner(id){ await db.collection('partners').doc(id).delete(); },
+  async uploadFile(path, file){
+    const ref = storage.ref().child(path + '/' + Date.now() + '_' + file.name.replace(/[^a-z0-9.]+/gi,'_'));
+    await ref.put(file);
+    return await ref.getDownloadURL();
+  },
+  async createOrder(data){
+    const ref = await db.collection('orders').add({
+      status:'placed',
+      statusHistory:[{status:'placed', at: new Date().toISOString()}],
+      reviewed:false,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      ...data
+    });
+    return ref.id;
+  },
+  async getOrder(id){
+    const doc = await db.collection('orders').doc(id).get();
+    return doc.exists ? {id:doc.id, ...doc.data()} : null;
+  },
+  async listOrdersByCustomer(uid){
+    const snap = await db.collection('orders').where('customerId','==',uid).get();
+    return snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  },
+  async listOrdersByPartner(partnerId){
+    const snap = await db.collection('orders').where('partnerId','==',partnerId).get();
+    return snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  },
+  async listAllOrdersAdmin(){
+    const snap = await db.collection('orders').orderBy('createdAt','desc').limit(300).get();
+    return snap.docs.map(d=>({id:d.id,...d.data()}));
+  },
+  async updateOrderStatus(orderId, status, extra){
+    const histEntry = {status, at: new Date().toISOString()};
+    await db.collection('orders').doc(orderId).update({
+      status,
+      statusHistory: firebase.firestore.FieldValue.arrayUnion(histEntry),
+      ...(extra||{})
+    });
+  },
+  async createReview(data){
+    await db.collection('reviews').add({createdAt: firebase.firestore.FieldValue.serverTimestamp(), ...data});
+    await db.collection('orders').doc(data.orderId).update({reviewed:true});
+    await Data.recomputePartnerRating(data.partnerId);
+  },
+  async listReviewsByPartner(partnerId){
+    const snap = await db.collection('reviews').where('partnerId','==',partnerId).get();
+    return snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  },
+  async recomputePartnerRating(partnerId){
+    const snap = await db.collection('reviews').where('partnerId','==',partnerId).get();
+    const revs = snap.docs.map(d=>d.data());
+    const count = revs.length;
+    const avg = count ? revs.reduce((s,r)=>s+(r.rating||0),0) / count : 0;
+    await db.collection('partners').doc(partnerId).update({rating: Math.round(avg*10)/10, ratingCount: count});
+  },
+  async listCoupons(){
+    const snap = await db.collection('coupons').get();
+    return snap.docs.map(d=>({id:d.id,...d.data()}));
+  },
+  async getCouponByCode(code){
+    const snap = await db.collection('coupons').where('code','==',code.toUpperCase()).limit(1).get();
+    return snap.empty ? null : {id:snap.docs[0].id, ...snap.docs[0].data()};
+  },
+  async createCoupon(data){ await db.collection('coupons').add(data); },
+  async updateCoupon(id, data){ await db.collection('coupons').doc(id).update(data); },
+  async deleteCoupon(id){ await db.collection('coupons').doc(id).delete(); },
+  async listUsersAdmin(){
+    const snap = await db.collection('users').get();
+    return snap.docs.map(d=>({id:d.id,...d.data()}));
+  },
+  async createReport(data){
+    await db.collection('reports').add({status:'open', createdAt: firebase.firestore.FieldValue.serverTimestamp(), ...data});
+  },
+  async listReportsAdmin(){
+    const snap = await db.collection('reports').orderBy('createdAt','desc').get();
+    return snap.docs.map(d=>({id:d.id,...d.data()}));
+  },
+  async updateReport(id, data){ await db.collection('reports').doc(id).update(data); },
+  async createService(id, data){ await db.collection('services').doc(id).set(data); },
+  async updateService(id, data){ await db.collection('services').doc(id).update(data); },
+  async deleteService(id){ await db.collection('services').doc(id).delete(); },
+};
+function minPrice(partner){
+  const vals = Object.values(partner.prices||{});
+  return vals.length ? Math.min(...vals) : Infinity;
+}
+
+/* ---------------------------------------------------------------
+   5. AUTH
+   --------------------------------------------------------------- */
+const Auth = {
+  async signup(name, email, phone, password){
+    const cred = await auth.createUserWithEmailAndPassword(email, password);
+    await Data.createUserProfile(cred.user.uid, {name, email, phone});
+    await cred.user.updateProfile({displayName:name});
+    await cred.user.sendEmailVerification();
+    return cred.user;
+  },
+  async login(email, password){ return (await auth.signInWithEmailAndPassword(email, password)).user; },
+  async logout(){ await auth.signOut(); location.hash = '#/'; },
+  async resetPassword(email){ await auth.sendPasswordResetEmail(email); },
+};
+async function signInWithGoogle() {
+    try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+
+        const userRef = db.collection("users").doc(user.uid);
+        const doc = await userRef.get();
+
+        if (!doc.exists) {
+            await userRef.set({
+                name: user.displayName || "",
+                email: user.email,
+                phone: user.phoneNumber || "",
+                role: "customer",
+                disabled: false,
+                addresses: [],
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
+
+        toast("Login successful", "success");
+        location.hash = "#/";
+
+    } catch (err) {
+        console.error(err);
+        toast(err.message, "error");
+    }
+}
+
+/* ---------------------------------------------------------------
+   6. ROUTER
+   --------------------------------------------------------------- */
+const routes = [
+  {p:/^\/$/, v: viewHome},
+  {p:/^\/how-it-works$/, v: viewHowItWorks},
+  {p:/^\/login$/, v: viewLogin},
+  {p:/^\/signup$/, v: viewSignup},
+  {p:/^\/forgot$/, v: viewForgot},
+  {p:/^\/partners$/, v: viewPartnersList},
+  {p:/^\/partner-onboarding$/, v: viewPartnerOnboarding, auth:true},
+  {p:/^\/partner\/([^/?]+)$/, v: viewPartnerDetail, param:'id'},
+  {p:/^\/book\/([^/?]+)$/, v: viewBooking, param:'partnerId', auth:true, role:'customer'},
+  {p:/^\/order\/([^/?]+)$/, v: viewOrderDetail, auth:true},
+  {p:/^\/dashboard\/(orders|profile|addresses)$/, v: viewCustomerDashboard, param:'tab', auth:true, role:'customer'},
+  {p:/^\/partner\/(orders|profile|reviews)$/, v: viewPartnerDashboard, param:'tab', auth:true, role:'partner'},
+  {p:/^\/admin\/(overview|partners|services|orders|users|coupons|reports)$/, v: viewAdmin, param:'tab', auth:true, role:'admin'},
+];
+
+function currentRoutePath(){ return (location.hash.slice(1) || '/').split('?')[0]; }
+
+async function router(){
+  const app = $('#app');
+  const path = currentRoutePath();
+  state.route = path;
+  highlightNav(path);
+
+  if(!fbReady){ app.innerHTML = viewSetupScreen(); return; }
+
+  for(const r of routes){
+    const m = path.match(r.p);
+    if(m){
+      if(r.auth && !state.user){
+        app.innerHTML = viewLoader();
+        toast('Please log in to continue', 'info');
+        location.hash = '#/login';
+        return;
+      }
+      if(r.role && state.profile && state.profile.role !== r.role){
+        app.innerHTML = viewBlocked(r.role);
+        return;
+      }
+      app.innerHTML = viewLoader();
+      try{
+        const param = r.param ? m[1] : null;
+        await r.v(param, app);
+      }catch(e){
+        console.error(e);
+        app.innerHTML = viewError(e);
+      }
+      window.scrollTo({top:0,behavior:'instant'});
+      return;
+    }
+  }
+  app.innerHTML = view404();
+}
+function highlightNav(path){
+  $$('#main-nav a').forEach(a => a.classList.toggle('active', path.startsWith(a.dataset.route) && a.dataset.route !== '/'));
+  $('#main-nav').classList.remove('open');
+}
+
+/* ---------------------------------------------------------------
+   7. SHARED UI FRAGMENTS
+   --------------------------------------------------------------- */
+function viewLoader(){ return `<div class="loader"><div class="spinner"></div></div>`; }
+function viewError(e){ return `<div class="wrap section"><div class="empty-state"><div class="porthole porthole-lg">⚠️</div><h3>Something went sideways</h3><p>${esc(e.message||e)}</p></div></div>`; }
+function view404(){ return `<div class="wrap section"><div class="empty-state"><div class="porthole porthole-lg">🧭</div><h3>Page not found</h3><p>That address didn't lead anywhere. Head back home.</p><a href="#/" class="btn btn-primary">Go home</a></div></div>`; }
+function viewBlocked(role){
+  return `<div class="wrap section"><div class="empty-state"><div class="porthole porthole-lg">🔒</div><h3>This area is for ${esc(role)}s</h3><p>Your account doesn't have access to this dashboard.</p><a href="#/" class="btn btn-primary">Go home</a></div></div>`;
+}
+function viewSetupScreen(){
+  return `<div class="setup-screen"><div class="setup-card">
+    <div class="eyebrow">Setup needed</div>
+    <h2>Connect your Firebase project</h2>
+    <p>Washbit is ready to go, it just needs your existing Firebase project's config.</p>
+    <ol>
+      <li>Open <code>firebase-config.js</code> next to this HTML file.</li>
+      <li>Paste in the config object from Firebase Console → Project settings → Your apps.</li>
+      <li>Make sure <strong>Email/Password Authentication</strong>, <strong>Firestore</strong>, and <strong>Storage</strong> are enabled on that project.</li>
+      <li>Reload this page.</li>
+    </ol>
+    <p class="small">Tip: the first account you want as Admin still needs one manual step — open Firestore, find that user's document under <code>users/&lt;uid&gt;</code>, and set <code>role</code> to <code>admin</code>.</p>
+  </div></div>`;
+}
+function starInputHtml(name, val){
+  val = val||0;
+  let out = `<div class="star-input" data-star-group="${name}">`;
+  for(let i=1;i<=5;i++) out += `<span data-star="${i}" class="${i<=val?'active':''}">★</span>`;
+  out += `</div><input type="hidden" name="${name}" value="${val}">`;
+  return out;
+}
+
+/* ---------------------------------------------------------------
+   8. VIEW: HOME
+   --------------------------------------------------------------- */
+async function viewHome(_, app){
+  if(!state.services.length) await Data.loadServices();
+  const cats = state.services.slice(0,8);
+  app.innerHTML = `
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="pill-badge">📍 Verified local care partners</div>
+        <h1>Laundry day, sorted<br>by someone <span class="accent-word">great at it</span>.</h1>
+        <p class="sub">Washbit connects you with vetted partners nearby for laundry, dry cleaning, ironing, stitching, shoe & bag care, and carpet & blanket cleaning — booked in minutes, tracked to your door.</p>
+        <div class="search-card">
+          <button class="locate-btn" data-action="use-location" title="Use my current location">📍<span class="lb-text">Use my location</span></button>
+          <input class="input" id="home-search-text" placeholder="Search by area, city or PIN">
+          <select class="select" id="home-search-cat">
+            <option value="">All services</option>
+            ${cats.map(c=>`<option value="${c.id}">${c.icon} ${esc(c.name)}</option>`).join('')}
+          </select>
+          <button class="btn btn-primary" data-action="home-search">Find partners</button>
+        </div>
+        <div class="hero-badges">
+          <span class="badge">✅ <b>Verified</b> partners only</span>
+          <span class="badge">✅ Fixed, <b>upfront</b> pricing</span>
+          <span class="badge">✅ Live order <b>tracking</b></span>
+        </div>
+        <a href="#/partner-onboarding" class="btn btn-ghost btn-sm">Become a partner →</a>
+      </div>
+      <div class="hero-visual">
+<img src="sarah-brown-oa7pqZmmhuA-unsplash.jpg" class="hero-image">
+        <div class="chip-float" style="top:8%;left:6%;"><div class="cf-ico" style="background:var(--primary-light);color:var(--primary-dark);">👕</div><div><div class="cf-label">Laundry & ironing</div><div class="cf-value">from ₹25 / item</div></div></div>
+        <div class="chip-float" style="bottom:14%;left:10%;"><div class="cf-ico" style="background:var(--accent-light);color:var(--accent-dark);">🚚</div><div><div class="cf-label">Pickup & delivery</div><div class="cf-value">tracked live</div></div></div>
+        <div class="chip-float" style="top:42%;right:4%;"><div class="cf-ico" style="background:#FEF3E2;color:#B45309;">⭐</div><div><div class="cf-label">Rated by</div><div class="cf-value">real customers</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="flex between center" style="margin-bottom:18px;">
+        <h2 style="margin:0;">What do you need done?</h2>
+        <a href="#/partners" class="link-btn">View all partners →</a>
+      </div>
+      <div class="cat-grid">
+        ${cats.map(c => `
+          <a href="#/partners?cat=${c.id}" class="cat-card">
+            <div class="icon-tile">${c.icon}</div>
+            <strong>${esc(c.name)}</strong>
+            <span>${esc(c.unit)}</span>
+          </a>`).join('')}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight" style="background:var(--bg-soft);">
+    <div class="wrap">
+      <div class="flex between center" style="margin-bottom:18px;">
+        <h2 style="margin:0;">Featured partners</h2>
+        <a href="#/partners" class="link-btn">Browse all →</a>
+      </div>
+      <div id="featured-list" class="grid" style="grid-template-columns:repeat(2,1fr);">${viewLoader()}</div>
+    </div>
+  </section>
+
+  <section class="section dark-section">
+    <div class="wrap">
+      <div class="eyebrow text-center" style="display:block;">How it works</div>
+      <h2 class="text-center" style="margin-bottom:34px;">Laundry done in 3 easy steps</h2>
+      <div class="grid" style="grid-template-columns:repeat(3,1fr);">
+        ${[['🔎','Search nearby','Enter your area or use GPS to see verified partners near you, sorted by distance and rating.'],
+           ['🧺','Book a service','Pick a category, choose a partner and time slot — pricing is fixed and shown upfront.'],
+           ['🚚','Track & rate','Follow pickup to delivery in real time, then rate the partner to help your neighbours choose well.']]
+        .map(([icon,title,body],i) => `
+          <div class="dark-step">
+            <div class="num-circle">${icon}</div>
+            <h4>${title}</h4><p>${body}</p>
+          </div>`).join('')}
+      </div>
+    </div>
+  </section>
+  `;
+
+  $('#home-search-text').addEventListener('keydown', e => { if(e.key==='Enter') goHomeSearch(); });
+  Data.listPartners({}).then(list => {
+    const top = list.slice(0,4);
+    $('#featured-list').innerHTML = top.length ? top.map(partnerCardHtml).join('') :
+      `<div class="empty-state" style="grid-column:1/-1;"><div class="porthole porthole-lg">🧺</div><h3>No partners live yet</h3><p>Once an admin approves partners, they'll appear here.</p></div>`;
+  });
+}
+function goHomeSearch(){
+  const text = $('#home-search-text').value.trim();
+  const cat = $('#home-search-cat').value;
+  const params = new URLSearchParams();
+  if(text) params.set('q', text);
+  if(cat) params.set('cat', cat);
+  location.hash = '#/partners' + (params.toString() ? '?' + params.toString() : '');
+}
+function useLocation(cb){
+  if(!navigator.geolocation){ toast('Geolocation is not available on this device', 'error'); return; }
+  toast('Locating you…', 'info');
+  navigator.geolocation.getCurrentPosition(pos => {
+    state.geo = {lat: pos.coords.latitude, lng: pos.coords.longitude};
+    toast('Location found — sorting by distance', 'success');
+    if(cb) cb();
+  }, () => toast('Could not get your location — check permissions', 'error'));
+}
+
+async function viewHowItWorks(_, app){
+  app.innerHTML = `<div class="wrap section">
+    <div class="eyebrow">How it works</div>
+    <h1>From basket to doorstep</h1>
+    <div class="grid" style="grid-template-columns:1fr;max-width:720px;margin-top:20px;">
+      <div class="panel"><h3>1. Tell us where you are</h3><p>Enter your city, area or PIN — or share your location for the closest matches. Washbit only surfaces partners that are approved and currently accepting orders.</p></div>
+      <div class="panel"><h3>2. Choose a service and partner</h3><p>Compare partners by rating, distance and price for the exact service you need — laundry, dry cleaning, ironing, stitching, shoe or bag care, carpets or blankets.</p></div>
+      <div class="panel"><h3>3. Book a pickup slot</h3><p>Pick a date and time window, add your address and any notes, apply a coupon if you have one, and confirm.</p></div>
+      <div class="panel"><h3>4. Track every step</h3><p>Follow your order from placed to accepted, picked up, in progress, ready and delivered — all from your dashboard.</p></div>
+      <div class="panel"><h3>5. Rate your partner</h3><p>Once delivered, leave a rating and review so other customers nearby can book with confidence.</p></div>
+    </div>
+  </div>`;
+}
+
+/* ---------------------------------------------------------------
+   9. PARTNER CARD (shared)
+   --------------------------------------------------------------- */
+function partnerCardHtml(p){
+  const dist = (p._distance!=null) ? `<span class="dist-pill">📍 ${p._distance.toFixed(1)} km away</span>` : (p.area ? `<span class="dist-pill">📍 ${esc(p.area)}, ${esc(p.city||'')}</span>` : '');
+  const cats = (p.categories||[]).slice(0,3);
+  return `<a href="#/partner/${p.id}" class="partner-card">
+    <div class="porthole porthole-lg">${p.photoURL ? `<img src="${esc(p.photoURL)}" alt="">` : (cats[0] ? serviceIcon(cats[0]) : '🧺')}</div>
+    <div class="body">
+      <div class="top-row">
+        <div>
+          <h3>${esc(p.businessName||'Unnamed partner')} ${p.featured?'<span class="badge badge-accent">Featured</span>':''}</h3>
+          <div class="rating-row"><span class="stars">${stars(p.rating)}</span> ${p.rating?p.rating.toFixed(1):'New'} <span class="faint">(${p.ratingCount||0})</span></div>
+        </div>
+        <div class="price-tag">${minPrice(p)!==Infinity ? 'from '+rupee(minPrice(p)) : ''}</div>
+      </div>
+      <div class="tag-row">
+        ${cats.map(c=>`<span class="tag-chip">${serviceIcon(c)} ${esc(serviceName(c))}</span>`).join('')}
+        ${!p.isOpen ? '<span class="tag-chip" style="color:var(--danger);">Not accepting orders now</span>':''}
+      </div>
+      ${dist}
+    </div>
+  </a>`;
+}
+
+/* ---------------------------------------------------------------
+   10. VIEW: PARTNERS LIST (search & filters)
+   --------------------------------------------------------------- */
+let currentFilters = {sort:'default', openOnly:false};
+async function viewPartnersList(_, app){
+  if(!state.services.length) await Data.loadServices();
+  const catParam = qs('cat') || '';
+  const qParam = qs('q') || '';
+  currentFilters = {category: catParam, text: qParam, sort: currentFilters.sort || 'default', openOnly: currentFilters.openOnly || false, geo: state.geo};
+  const advancedSort = currentFilters.sort === 'price_low';
+
+  app.innerHTML = `
+  <div class="wrap section-tight">
+    <h1 style="font-size:28px;">Find partners near you</h1>
+    <p class="muted" style="margin-top:-6px;">Search by area, city or PIN — or tap the location icon to find partners around you.</p>
+    <div class="search-card" style="margin-top:10px;">
+      <button class="locate-btn" data-action="use-location-list" title="Use my current location">📍<span class="lb-text">Use my location</span></button>
+      <input class="input" id="pl-text" placeholder="Search by area, city or PIN" value="${esc(qParam)}">
+      <select class="select" id="pl-cat">
+        <option value="">All services</option>
+        ${state.services.map(c=>`<option value="${c.id}" ${c.id===catParam?'selected':''}>${c.icon} ${esc(c.name)}</option>`).join('')}
+      </select>
+      <button class="btn btn-primary" data-action="pl-search">Search</button>
+    </div>
+    <div class="filters-bar" style="margin-top:18px;">
+      <button class="filter-chip ${currentFilters.sort==='default'?'active':''}" data-action="pl-sort" data-sort="default">Recommended</button>
+      <button class="filter-chip ${currentFilters.sort==='distance'?'active':''}" data-action="pl-sort" data-sort="distance">Nearest</button>
+      <button class="filter-chip ${currentFilters.sort==='rating'?'active':''}" data-action="pl-sort" data-sort="rating">Top rated</button>
+      <button class="filter-chip ${currentFilters.openOnly?'active':''}" data-action="pl-toggle-open">Open now</button>
+      <div class="sort-select-wrap">
+        <label for="pl-advanced-sort">Sort</label>
+        <select class="sort-select" id="pl-advanced-sort">
+          <option value="" ${!advancedSort?'selected':''}>More options…</option>
+          <option value="price_low" ${advancedSort?'selected':''}>Price: low to high</option>
+        </select>
+      </div>
+    </div>
+    <div id="pl-results" class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:8px;">${viewLoader()}</div>
+  </div>`;
+  loadPartnerResults();
+  $('#pl-text').addEventListener('keydown', e => { if(e.key==='Enter'){ currentFilters.text = $('#pl-text').value; loadPartnerResults(); } });
+  $('#pl-advanced-sort').addEventListener('change', e => {
+    currentFilters.sort = e.target.value || 'default';
+    $$('.filter-chip[data-action=pl-sort]').forEach(c => c.classList.toggle('active', c.dataset.sort === currentFilters.sort));
+    loadPartnerResults();
+  });
+}
+async function loadPartnerResults(){
+  const box = $('#pl-results');
+  if(!box) return;
+  box.innerHTML = viewLoader();
+  currentFilters.geo = state.geo;
+  let list = await Data.listPartners(currentFilters);
+  if(currentFilters.openOnly) list = list.filter(p => p.isOpen);
+  box.innerHTML = list.length ? list.map(partnerCardHtml).join('') :
+    `<div class="empty-state" style="grid-column:1/-1;"><div class="porthole porthole-lg">🔍</div><h3>No partners match yet</h3><p>Try a different area, service, or clear your filters.</p></div>`;
+}
+
+/* ---------------------------------------------------------------
+   11. VIEW: PARTNER DETAIL
+   --------------------------------------------------------------- */
+async function viewPartnerDetail(id, app){
+  const p = await Data.getPartner(id);
+  if(!p || p.status !== 'approved'){ app.innerHTML = view404(); return; }
+  const reviews = await Data.listReviewsByPartner(id);
+  app.innerHTML = `
+  <div class="wrap section-tight">
+    <div class="card card-pad" style="display:flex;gap:22px;flex-wrap:wrap;align-items:center;">
+      <div class="porthole porthole-lg">${p.photoURL?`<img src="${esc(p.photoURL)}" alt="">`:'🧺'}</div>
+      <div style="flex:1;min-width:220px;">
+        <div class="flex center" style="gap:10px;flex-wrap:wrap;">
+          <h1 style="margin:0;font-size:26px;">${esc(p.businessName)}</h1>
+          ${p.featured?'<span class="badge badge-accent">Featured</span>':''}
+          ${p.isOpen?'<span class="badge badge-success">Accepting orders</span>':'<span class="badge badge-danger">Not accepting orders</span>'}
+        </div>
+        <div class="rating-row" style="margin:8px 0;"><span class="stars">${stars(p.rating)}</span> ${p.rating?p.rating.toFixed(1):'New'} <span class="faint">(${p.ratingCount||0} reviews)</span></div>
+        <p style="margin:0;">📍 ${esc(p.area||'')}${p.area&&p.city?', ':''}${esc(p.city||'')} ${p.pincode?'· '+esc(p.pincode):''}</p>
+        ${p.description?`<p>${esc(p.description)}</p>`:''}
+      </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns:2fr 1fr;margin-top:22px;align-items:start;">
+      <div>
+        <div class="panel">
+          <h3>Services & pricing</h3>
+          <div class="table-wrap">
+            <table><thead><tr><th>Service</th><th>Price</th><th></th></tr></thead><tbody>
+            ${(p.categories||[]).map(c => `
+              <tr><td>${serviceIcon(c)} ${esc(serviceName(c))} <span class="faint small">(${esc(serviceUnit(c))})</span></td>
+              <td class="price-tag">${rupee((p.prices||{})[c]||0)}</td>
+              <td><a href="#/book/${p.id}?service=${c}" class="btn btn-primary btn-sm">Book</a></td></tr>`).join('') || '<tr><td colspan="3">No services listed yet.</td></tr>'}
+            </tbody></table>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:20px;">
+          <h3>Reviews (${reviews.length})</h3>
+          ${reviews.length ? reviews.slice(0,10).map(r => `
+            <div style="padding:14px 0;border-bottom:1px solid var(--line-soft);">
+              <div class="flex between center"><strong>${esc(r.customerName||'Customer')}</strong><span class="stars">${stars(r.rating)}</span></div>
+              <p style="margin:6px 0 0;">${esc(r.comment||'')}</p>
+              <span class="faint small">${fmtDateShort(r.createdAt)}</span>
+            </div>`).join('') : '<p class="faint">No reviews yet — be the first to book and rate.</p>'}
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <h3>Book this partner</h3>
+          <p>Select a service from the pricing table to start your booking, or report an issue below.</p>
+          <a href="#/book/${p.id}" class="btn btn-primary btn-block">Book a service</a>
+          <button class="btn btn-ghost btn-block" style="margin-top:10px;" data-action="report-partner" data-id="${p.id}" data-name="${esc(p.businessName)}">Report this partner</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------------------------------------------------------------
+   12. VIEW: BOOKING
+   --------------------------------------------------------------- */
+async function viewBooking(partnerId, app){
+  const p = await Data.getPartner(partnerId);
+  if(!p || p.status!=='approved'){ app.innerHTML = view404(); return; }
+  if(!p.isOpen){ app.innerHTML = `<div class="wrap section"><div class="empty-state"><div class="porthole porthole-lg">😴</div><h3>Not accepting orders right now</h3><p>${esc(p.businessName)} isn't taking new bookings at the moment. Try another partner nearby.</p><a href="#/partners" class="btn btn-primary">Browse partners</a></div></div>`; return; }
+  const preselected = qs('service') || (p.categories||[])[0] || '';
+  const addresses = (state.profile && state.profile.addresses) || [];
+
+  app.innerHTML = `
+  <div class="wrap section-tight">
+    <div class="steps">
+      <div class="step done"><div class="num">✓</div>Choose partner</div>
+      <div class="step active"><div class="num">2</div>Book service</div>
+      <div class="step"><div class="num">3</div>Track order</div>
+    </div>
+    <div class="grid" style="grid-template-columns:1.3fr 1fr;align-items:start;">
+      <form class="panel" id="booking-form">
+        <h3>Book ${esc(p.businessName)}</h3>
+        <div class="field">
+          <label>Service</label>
+          <select class="select" name="serviceId" id="bk-service" required>
+            ${(p.categories||[]).map(c => `<option value="${c}" ${c===preselected?'selected':''}>${serviceIcon(c)} ${esc(serviceName(c))} — ${rupee((p.prices||{})[c]||0)} ${esc(serviceUnit(c))}</option>`).join('')}
+          </select>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Quantity / items</label><input class="input" type="number" min="1" step="1" name="qty" id="bk-qty" value="1" required></div>
+          <div class="field"><label>Pickup date</label><input class="input" type="date" name="pickupDate" min="${new Date().toISOString().slice(0,10)}" required></div>
+        </div>
+        <div class="field">
+          <label>Pickup time slot</label>
+          <select class="select" name="pickupSlot" required>
+            <option>9:00 AM – 11:00 AM</option><option>11:00 AM – 1:00 PM</option>
+            <option>1:00 PM – 3:00 PM</option><option>3:00 PM – 5:00 PM</option><option>5:00 PM – 7:00 PM</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Pickup address</label>
+          ${addresses.length ? `<select class="select" id="bk-addr-select">
+            ${addresses.map((a,i)=>`<option value="${i}">${esc(a.label)} — ${esc(a.line1)}, ${esc(a.city)}</option>`).join('')}
+            <option value="new">+ Enter a new address</option>
+          </select>` : ''}
+          <textarea class="textarea" name="address" id="bk-address" placeholder="House/flat no., street, area, city, PIN" style="margin-top:8px;" required>${addresses[0] ? (addresses[0].line1+', '+addresses[0].city+' '+ (addresses[0].pincode||'')) : ''}</textarea>
+        </div>
+        <div class="field"><label>Notes for the partner (optional)</label><textarea class="textarea" name="notes" placeholder="e.g. delicate fabrics, specific stain, etc."></textarea></div>
+        <div class="field">
+          <label>Coupon code (optional)</label>
+          <div class="gap-8"><input class="input" name="coupon" id="bk-coupon" placeholder="e.g. WASH20"><button type="button" class="btn btn-light" data-action="apply-coupon">Apply</button></div>
+          <div id="coupon-msg" class="small" style="margin-top:6px;"></div>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Confirm booking</button>
+      </form>
+      <div class="panel" id="bk-summary">
+        <h3>Order summary</h3>
+        <div id="bk-summary-body"></div>
+      </div>
+    </div>
+  </div>`;
+
+  const state_local = {discount:0, coupon:null};
+  function recompute(){
+    const svc = $('#bk-service').value;
+    const qty = Math.max(1, parseInt($('#bk-qty').value||'1',10));
+    const unit = (p.prices||{})[svc] || 0;
+    const subtotal = unit*qty;
+    const discount = state_local.coupon ? computeDiscount(state_local.coupon, subtotal) : 0;
+    const total = Math.max(0, subtotal - discount);
+    $('#bk-summary-body').innerHTML = `
+      <div class="flex between"><span class="muted">${serviceIcon(svc)} ${esc(serviceName(svc))} × ${qty}</span><span>${rupee(subtotal)}</span></div>
+      ${discount ? `<div class="flex between" style="color:var(--success);"><span>Coupon discount</span><span>-${rupee(discount)}</span></div>`:''}
+      <hr class="divider">
+      <div class="flex between" style="font-weight:800;font-size:18px;"><span>Total</span><span class="price-tag">${rupee(total)}</span></div>
+      <p class="small faint" style="margin-top:10px;">Pricing is fixed by Washbit for this partner — no surprises at delivery.</p>`;
+    return {svc, qty, unit, subtotal, discount, total};
+  }
+  $('#bk-service').addEventListener('change', recompute);
+  $('#bk-qty').addEventListener('input', recompute);
+  recompute();
+
+  if($('#bk-addr-select')){
+    $('#bk-addr-select').addEventListener('change', (e) => {
+      if(e.target.value==='new'){ $('#bk-address').value=''; return; }
+      const a = addresses[e.target.value];
+      $('#bk-address').value = `${a.line1}, ${a.city} ${a.pincode||''}`;
+    });
+  }
+
+  $('#booking-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const calc = recompute();
+    const btn = e.target.querySelector('button[type=submit]');
+    btn.disabled = true; btn.textContent = 'Booking…';
+    try{
+      const fd = new FormData(e.target);
+      const orderId = await Data.createOrder({
+        customerId: state.user.uid,
+        customerName: state.profile.name || state.user.email,
+        customerPhone: state.profile.phone || '',
+        partnerId: p.id,
+        partnerName: p.businessName,
+        serviceId: calc.svc,
+        serviceName: serviceName(calc.svc),
+        qty: calc.qty,
+        unitPrice: calc.unit,
+        subtotal: calc.subtotal,
+        discount: calc.discount,
+        couponCode: state_local.coupon ? state_local.coupon.code : null,
+        total: calc.total,
+        address: fd.get('address'),
+        pickupDate: fd.get('pickupDate'),
+        pickupSlot: fd.get('pickupSlot'),
+        notes: fd.get('notes') || '',
+      });
+      toast('Booking confirmed!', 'success');
+      location.hash = '#/order/' + orderId;
+    }catch(err){
+      toast(err.message, 'error');
+      btn.disabled = false; btn.textContent = 'Confirm booking';
+    }
+  });
+
+  $('#booking-form').addEventListener('click', async (e) => {
+    if(e.target.dataset.action !== 'apply-coupon') return;
+    e.preventDefault();
+    const code = $('#bk-coupon').value.trim();
+    if(!code) return;
+    const c = await Data.getCouponByCode(code);
+    const msg = $('#coupon-msg');
+    if(!c || !c.active){ msg.innerHTML = '<span style="color:var(--danger);">Invalid or inactive coupon</span>'; state_local.coupon=null; recompute(); return; }
+    if(c.expiry && new Date(c.expiry) < new Date()){ msg.innerHTML = '<span style="color:var(--danger);">This coupon has expired</span>'; state_local.coupon=null; recompute(); return; }
+    if(c.usageLimit && (c.usedCount||0) >= c.usageLimit){ msg.innerHTML = '<span style="color:var(--danger);">This coupon has reached its usage limit</span>'; state_local.coupon=null; recompute(); return; }
+    state_local.coupon = c;
+    msg.innerHTML = `<span style="color:var(--success);">Coupon applied: ${c.type==='percent'?c.value+'% off':rupee(c.value)+' off'}</span>`;
+    recompute();
+  });
+}
+function computeDiscount(coupon, subtotal){
+  if(coupon.minOrder && subtotal < coupon.minOrder) return 0;
+  let d = coupon.type === 'percent' ? subtotal * (coupon.value/100) : coupon.value;
+  if(coupon.maxDiscount) d = Math.min(d, coupon.maxDiscount);
+  return Math.min(d, subtotal);
+}
+
+/* ---------------------------------------------------------------
+   13. VIEW: ORDER DETAIL / TRACKING
+   --------------------------------------------------------------- */
+async function viewOrderDetail(id, app){
+  const o = await Data.getOrder(id);
+  if(!o){ app.innerHTML = view404(); return; }
+  const isOwnerCustomer = state.profile.role==='customer' && o.customerId===state.user.uid;
+  const isOwnerPartner = state.profile.role==='partner' && state.partnerDoc && o.partnerId===state.partnerDoc.id;
+  const isAdmin = state.profile.role==='admin';
+  if(!isOwnerCustomer && !isOwnerPartner && !isAdmin){ app.innerHTML = viewBlocked('owner'); return; }
+
+  const cancelled = o.status === 'cancelled';
+  const statusIdx = ORDER_STATUSES.indexOf(o.status);
+  app.innerHTML = `
+  <div class="wrap section-tight">
+    <div class="flex between center" style="margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div class="eyebrow">Order <span class="mono">#${id.slice(0,8).toUpperCase()}</span></div>
+        <h1 style="margin:4px 0 0;font-size:26px;">${esc(o.serviceName)} with ${esc(o.partnerName)}</h1>
+      </div>
+      ${statusBadge(o.status)}
+    </div>
+    <div class="grid" style="grid-template-columns:1.2fr 1fr;align-items:start;">
+      <div class="panel">
+        <h3>Order tracking</h3>
+        ${cancelled ? `<div class="badge badge-danger" style="margin-bottom:14px;">Cancelled</div><p>This order was cancelled.</p>` : `
+        <ul class="timeline">
+          ${ORDER_STATUSES.map((s,i) => {
+            const hist = (o.statusHistory||[]).find(h=>h.status===s);
+            const cls = i < statusIdx ? 'done' : (i===statusIdx ? 'current' : '');
+            return `<li class="${cls}"><div class="t-label">${STATUS_LABEL[s]}</div><div class="t-time">${hist ? fmtDate(new Date(hist.at)) : (i<=statusIdx?'':'Pending')}</div></li>`;
+          }).join('')}
+        </ul>`}
+        ${(isOwnerPartner && !cancelled && NEXT_STATUS[o.status]) ? `<button class="btn btn-primary" data-action="advance-order" data-id="${o.id}" data-next="${NEXT_STATUS[o.status]}">${NEXT_ACTION_LABEL[o.status]}</button>` : ''}
+        ${(isOwnerCustomer && o.status==='placed') ? `<button class="btn btn-danger" style="margin-left:8px;" data-action="cancel-order" data-id="${o.id}">Cancel order</button>` : ''}
+        ${(isAdmin && !cancelled && o.status!=='delivered') ? `<button class="btn btn-danger" style="margin-left:8px;" data-action="cancel-order" data-id="${o.id}">Cancel (admin)</button>` : ''}
+        ${(isOwnerCustomer && o.status==='delivered' && !o.reviewed) ? `<button class="btn btn-accent" style="margin-top:14px;" data-action="review-order" data-id="${o.id}" data-partner="${o.partnerId}">Rate this partner</button>` : ''}
+      </div>
+      <div class="panel">
+        <h3>Details</h3>
+        <div class="flex between" style="margin-bottom:8px;"><span class="muted">Service</span><span>${serviceIcon(o.serviceId)} ${esc(o.serviceName)}</span></div>
+        <div class="flex between" style="margin-bottom:8px;"><span class="muted">Quantity</span><span>${o.qty}</span></div>
+        <div class="flex between" style="margin-bottom:8px;"><span class="muted">Pickup</span><span>${esc(o.pickupDate)} · ${esc(o.pickupSlot)}</span></div>
+        <div class="flex between" style="margin-bottom:8px;"><span class="muted">Address</span><span style="text-align:right;max-width:60%;">${esc(o.address)}</span></div>
+        ${o.notes ? `<div class="flex between" style="margin-bottom:8px;"><span class="muted">Notes</span><span style="text-align:right;max-width:60%;">${esc(o.notes)}</span></div>`:''}
+        <hr class="divider">
+        <div class="flex between"><span class="muted">Subtotal</span><span>${rupee(o.subtotal)}</span></div>
+        ${o.discount ? `<div class="flex between" style="color:var(--success);"><span class="muted">Discount</span><span>-${rupee(o.discount)}</span></div>`:''}
+        <div class="flex between" style="font-weight:800;font-size:17px;margin-top:6px;"><span>Total</span><span class="price-tag">${rupee(o.total)}</span></div>
+        ${isAdmin ? `<hr class="divider"><p class="small faint">Customer: ${esc(o.customerName)} (${esc(o.customerPhone||'—')})</p>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+function statusBadge(status){
+  const map = {placed:'primary', accepted:'primary', picked_up:'warning', in_progress:'warning', ready:'accent', delivered:'success', cancelled:'danger'};
+  return `<span class="badge badge-${map[status]||'neutral'}">${STATUS_LABEL[status]||status}</span>`;
+}
+
+/* ---------------------------------------------------------------
+   14. VIEW: CUSTOMER DASHBOARD
+   --------------------------------------------------------------- */
+async function viewCustomerDashboard(tab, app){
+  tab = tab || 'orders';
+  app.innerHTML = dashShell('customer', tab, `<div id="dash-content">${viewLoader()}</div>`);
+  const content = $('#dash-content');
+  if(tab === 'orders'){
+    const orders = await Data.listOrdersByCustomer(state.user.uid);
+    content.innerHTML = orders.length ? `<div class="grid" style="grid-template-columns:1fr;">${orders.map(o => orderRowCard(o,'customer')).join('')}</div>`
+      : `<div class="empty-state"><div class="porthole porthole-lg">🧺</div><h3>No orders yet</h3><p>Book your first service and it'll show up here.</p><a href="#/partners" class="btn btn-primary">Find partners</a></div>`;
+  }else if(tab === 'profile'){
+    const pr = state.profile;
+    content.innerHTML = `<div class="panel" style="max-width:520px;">
+      <h3>My profile</h3>
+      <form id="profile-form">
+        <div class="field"><label>Full name</label><input class="input" name="name" value="${esc(pr.name||'')}" required></div>
+        <div class="field"><label>Phone</label><input class="input" name="phone" value="${esc(pr.phone||'')}"></div>
+        <div class="field"><label>Email</label><input class="input" value="${esc(pr.email||'')}" disabled></div>
+        <button class="btn btn-primary" type="submit">Save changes</button>
+      </form>
+    </div>`;
+    $('#profile-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      await Data.updateUserProfile(state.user.uid, {name: fd.get('name'), phone: fd.get('phone')});
+      state.profile.name = fd.get('name'); state.profile.phone = fd.get('phone');
+      updateHeaderUser();
+      toast('Profile updated', 'success');
+    });
+  }else if(tab === 'addresses'){
+    const list = state.profile.addresses || [];
+    content.innerHTML = `<div class="panel">
+      <div class="flex between center"><h3 style="margin:0;">Saved addresses</h3><button class="btn btn-primary btn-sm" data-action="add-address">+ Add address</button></div>
+      <div style="margin-top:14px;">
+      ${list.length ? list.map((a,i)=>`<div class="card card-pad" style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
+        <div><strong>${esc(a.label)}</strong><p style="margin:4px 0 0;">${esc(a.line1)}, ${esc(a.area||'')} ${esc(a.city)} ${esc(a.pincode||'')}</p></div>
+        <button class="btn btn-danger btn-sm" data-action="remove-address" data-idx="${i}">Remove</button>
+      </div>`).join('') : '<p class="faint">No saved addresses yet.</p>'}
+      </div>
+    </div>`;
+  }
+}
+function orderRowCard(o, viewer){
+  return `<a href="#/order/${o.id}" class="card card-pad" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+    <div>
+      <div class="flex center" style="gap:8px;"><strong>${serviceIcon(o.serviceId)} ${esc(o.serviceName)}</strong>${statusBadge(o.status)}</div>
+      <p style="margin:6px 0 0;" class="small">${viewer==='customer' ? 'with '+esc(o.partnerName) : 'from '+esc(o.customerName)} · ${esc(o.pickupDate)} · ${esc(o.pickupSlot)}</p>
+    </div>
+    <div class="price-tag">${rupee(o.total)}</div>
+  </a>`;
+}
+function dashShell(area, activeTab, bodyHtml){
+  const tabs = area==='customer'
+    ? [['orders','🧺','My orders'],['profile','👤','Profile'],['addresses','📍','Addresses']]
+    : [['orders','🧺','Order queue'],['profile','🏪','Business profile'],['reviews','⭐','Reviews']];
+  const base = area==='customer' ? '#/dashboard/' : '#/partner/';
+  return `<div class="wrap section-tight">
+    <h1 style="font-size:26px;">${area==='customer'?'My account':'Partner dashboard'}</h1>
+    <div class="dash-shell">
+      <div class="dash-nav">${tabs.map(([id,icon,label]) => `<a href="${base}${id}" class="${activeTab===id?'active':''}">${icon} ${label}</a>`).join('')}</div>
+      <div>${bodyHtml}</div>
+    </div>
+  </div>`;
+}
+
+/* ---------------------------------------------------------------
+   15. VIEW: PARTNER ONBOARDING
+   --------------------------------------------------------------- */
+async function viewPartnerOnboarding(_, app){
+  if(!state.services.length) await Data.loadServices();
+  const existing = state.partnerDoc;
+  if(existing){
+    app.innerHTML = `<div class="wrap section text-center">
+      <div class="empty-state">
+        <div class="porthole porthole-lg">${existing.status==='approved'?'✅':existing.status==='disabled'?'⛔':'⏳'}</div>
+        <h3>${existing.status==='approved'?'You are an approved partner':existing.status==='disabled'?'Your partner account is disabled':'Application under review'}</h3>
+        <p>${existing.status==='approved' ? 'Head to your partner dashboard to manage orders.' : existing.status==='disabled' ? 'Contact Washbit support for help reactivating your account.' : "We'll notify you once Washbit reviews your application."}</p>
+        ${existing.status==='approved' ? `<a href="#/partner/orders" class="btn btn-primary">Go to dashboard</a>` : ''}
+      </div>
+    </div>`;
+    return;
+  }
+  app.innerHTML = `<div class="wrap section-tight">
+    <div class="eyebrow">Partner application</div>
+    <h1>Bring your business onto Washbit</h1>
+    <p class="muted" style="max-width:560px;">Tell us about your business. Washbit's team verifies every partner before they go live, and sets the listed prices so pricing stays consistent for customers.</p>
+    <form class="panel" id="onboard-form" style="max-width:640px;margin-top:18px;">
+      <div class="row2">
+        <div class="field"><label>Business name</label><input class="input" name="businessName" required></div>
+        <div class="field"><label>Owner / contact name</label><input class="input" name="ownerName" required></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Phone</label><input class="input" name="phone" required></div>
+        <div class="field"><label>Email</label><input class="input" name="email" type="email" value="${esc(state.user.email)}" required></div>
+      </div>
+      <div class="field"><label>Description</label><textarea class="textarea" name="description" placeholder="What makes your service great?"></textarea></div>
+      <div class="row3">
+        <div class="field"><label>City</label><input class="input" name="city" required></div>
+        <div class="field"><label>Area / locality</label><input class="input" name="area" required></div>
+        <div class="field"><label>PIN code</label><input class="input" name="pincode" required></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Latitude <span class="faint">(optional, enables distance search)</span></label><input class="input" name="lat" type="number" step="any"></div>
+        <div class="field"><label>Longitude <span class="faint">(optional)</span></label><input class="input" name="lng" type="number" step="any"></div>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" data-action="fill-my-location">📍 Use my current location</button>
+      <div class="field" style="margin-top:16px;">
+        <label>Services you offer</label>
+        <div class="gap-8 wrap">
+        ${state.services.map(s => `<label class="check-row"><input type="checkbox" name="cat" value="${s.id}"> ${s.icon} ${esc(s.name)}</label>`).join('')}
+        </div>
+        <div class="hint">Washbit will set your prices for each service after approval.</div>
+      </div>
+      <div class="field"><label>Business photo (optional)</label><input class="input" type="file" name="photo" accept="image/*" id="onboard-photo"></div>
+      <button class="btn btn-primary btn-block" type="submit">Submit application</button>
+    </form>
+  </div>`;
+
+  $('[data-action="fill-my-location"]').addEventListener('click', () => {
+    useLocation(() => {
+      $('input[name=lat]').value = state.geo.lat;
+      $('input[name=lng]').value = state.geo.lng;
+    });
+  });
+
+  $('#onboard-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type=submit]');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+    try{
+      const fd = new FormData(e.target);
+      const cats = fd.getAll('cat');
+      if(!cats.length){ toast('Select at least one service', 'error'); btn.disabled=false; btn.textContent='Submit application'; return; }
+      let photoURL = null;
+      const file = $('#onboard-photo').files[0];
+      if(file) photoURL = await Data.uploadFile('partners/' + state.user.uid, file);
+      const id = await Data.createPartnerApplication({
+        uid: state.user.uid,
+        businessName: fd.get('businessName'), ownerName: fd.get('ownerName'),
+        phone: fd.get('phone'), email: fd.get('email'), description: fd.get('description'),
+        city: fd.get('city'), area: fd.get('area'), pincode: fd.get('pincode'),
+        lat: fd.get('lat')?parseFloat(fd.get('lat')):null, lng: fd.get('lng')?parseFloat(fd.get('lng')):null,
+        categories: cats, photoURL
+      });
+      state.partnerDoc = await Data.getPartner(id);
+      toast('Application submitted for review', 'success');
+      router();
+    }catch(err){ toast(err.message,'error'); btn.disabled=false; btn.textContent='Submit application'; }
+  });
+}
+
+/* ---------------------------------------------------------------
+   16. VIEW: PARTNER DASHBOARD
+   --------------------------------------------------------------- */
+async function viewPartnerDashboard(tab, app){
+  tab = tab || 'orders';
+  const p = state.partnerDoc;
+  if(!p){ app.innerHTML = view404(); return; }
+  app.innerHTML = dashShell('partner', tab, `<div id="dash-content">${viewLoader()}</div>`);
+  const content = $('#dash-content');
+
+  if(tab === 'orders'){
+    const orders = await Data.listOrdersByPartner(p.id);
+    const active = orders.filter(o=>!['delivered','cancelled'].includes(o.status));
+    const past = orders.filter(o=>['delivered','cancelled'].includes(o.status));
+    content.innerHTML = `
+      <div class="stat-grid" style="margin-bottom:20px;">
+        <div class="stat-card"><div class="num">${orders.length}</div><div class="lbl">Total orders</div></div>
+        <div class="stat-card"><div class="num">${active.length}</div><div class="lbl">Active</div></div>
+        <div class="stat-card"><div class="num">${rupee(orders.filter(o=>o.status==='delivered').reduce((s,o)=>s+o.total,0))}</div><div class="lbl">Delivered value</div></div>
+        <div class="stat-card"><div class="num">${p.rating ? p.rating.toFixed(1):'—'}</div><div class="lbl">Rating (${p.ratingCount||0})</div></div>
+      </div>
+      <div class="flex between center" style="margin-bottom:12px;">
+        <h3 style="margin:0;">Active orders</h3>
+        <label class="check-row"><input type="checkbox" id="partner-open-toggle" ${p.isOpen?'checked':''}> Accepting new orders</label>
+      </div>
+      ${active.length ? active.map(o=>orderRowCard(o,'partner')).join('') : '<p class="faint">No active orders right now.</p>'}
+      <h3 style="margin:24px 0 12px;">Order history</h3>
+      ${past.length ? past.map(o=>orderRowCard(o,'partner')).join('') : '<p class="faint">Nothing here yet.</p>'}
+    `;
+    $('#partner-open-toggle').addEventListener('change', async e => {
+      await Data.updatePartner(p.id, {isOpen: e.target.checked});
+      state.partnerDoc.isOpen = e.target.checked;
+      toast(e.target.checked ? "You're now accepting orders" : "You've paused new orders", 'success');
+    });
+  }else if(tab === 'profile'){
+    content.innerHTML = `<div class="panel" style="max-width:600px;">
+      <h3>Business profile</h3>
+      <p class="small faint">Your prices, listing priority and featured status are set by Washbit admin and shown read-only here.</p>
+      <div class="row2">
+        <div class="field"><label>Business name</label><input class="input" value="${esc(p.businessName)}" disabled></div>
+        <div class="field"><label>Status</label><input class="input" value="${esc(p.status)}" disabled></div>
+      </div>
+      <div class="field"><label>Description</label><textarea class="textarea" id="pd-desc">${esc(p.description||'')}</textarea></div>
+      <div class="row2">
+        <div class="field"><label>Phone</label><input class="input" id="pd-phone" value="${esc(p.phone||'')}"></div>
+        <div class="field"><label>Area / City</label><input class="input" value="${esc(p.area||'')}, ${esc(p.city||'')}" disabled></div>
+      </div>
+      <button class="btn btn-primary" data-action="save-partner-profile">Save changes</button>
+      <hr class="divider">
+      <h4>Services & prices (set by admin)</h4>
+      <div class="table-wrap"><table><thead><tr><th>Service</th><th>Price</th></tr></thead><tbody>
+        ${(p.categories||[]).map(c=>`<tr><td>${serviceIcon(c)} ${esc(serviceName(c))}</td><td class="price-tag">${rupee((p.prices||{})[c]||0)}</td></tr>`).join('') || '<tr><td colspan="2">No services assigned yet.</td></tr>'}
+      </tbody></table></div>
+      <div class="flex between center" style="margin-top:16px;">
+        <div><span class="badge ${p.featured?'badge-accent':'badge-neutral'}">${p.featured?'Featured partner':'Not featured'}</span> <span class="badge badge-neutral">Priority ${p.priority??100}</span></div>
+      </div>
+    </div>`;
+    $('[data-action="save-partner-profile"]').addEventListener('click', async () => {
+      await Data.updatePartner(p.id, {description: $('#pd-desc').value, phone: $('#pd-phone').value});
+      state.partnerDoc.description = $('#pd-desc').value; state.partnerDoc.phone = $('#pd-phone').value;
+      toast('Profile updated', 'success');
+    });
+  }else if(tab === 'reviews'){
+    const reviews = await Data.listReviewsByPartner(p.id);
+    content.innerHTML = reviews.length ? reviews.map(r => `<div class="card card-pad" style="margin-bottom:10px;">
+      <div class="flex between center"><strong>${esc(r.customerName)}</strong><span class="stars">${stars(r.rating)}</span></div>
+      <p style="margin:6px 0 0;">${esc(r.comment||'')}</p><span class="faint small">${fmtDateShort(r.createdAt)}</span>
+    </div>`).join('') : `<div class="empty-state"><div class="porthole porthole-lg">⭐</div><h3>No reviews yet</h3><p>They'll show up here after customers rate delivered orders.</p></div>`;
+  }
+}
+
+/* ---------------------------------------------------------------
+   17. VIEW: ADMIN DASHBOARD
+   --------------------------------------------------------------- */
+async function viewAdmin(tab, app){
+  tab = tab || 'overview';
+  const tabs = [['overview','📊','Overview'],['partners','🏪','Partners'],['services','🧾','Services & pricing'],['orders','📦','Orders'],['users','👥','Users'],['coupons','🏷️','Coupons'],['reports','🚩','Reports']];
+  app.innerHTML = `<div class="wrap section-tight">
+    <h1 style="font-size:26px;">Admin control center</h1>
+    <div class="dash-shell">
+      <div class="dash-nav">${tabs.map(([id,icon,label])=>`<a href="#/admin/${id}" class="${tab===id?'active':''}">${icon} ${label}</a>`).join('')}</div>
+      <div id="admin-content">${viewLoader()}</div>
+    </div>
+  </div>`;
+  const content = $('#admin-content');
+
+  if(tab === 'overview'){
+    const [partners, orders, users] = await Promise.all([Data.listAllPartnersAdmin(), Data.listAllOrdersAdmin(), Data.listUsersAdmin()]);
+    const revenue = orders.filter(o=>o.status==='delivered').reduce((s,o)=>s+(o.total||0),0);
+    content.innerHTML = `
+      <div class="stat-grid">
+        <div class="stat-card"><div class="num">${partners.length}</div><div class="lbl">Total partners</div></div>
+        <div class="stat-card"><div class="num">${partners.filter(p=>p.status==='pending').length}</div><div class="lbl">Pending approval</div></div>
+        <div class="stat-card"><div class="num">${orders.length}</div><div class="lbl">Total orders</div></div>
+        <div class="stat-card"><div class="num">${rupee(revenue)}</div><div class="lbl">Delivered revenue</div></div>
+      </div>
+      <div class="panel" style="margin-top:20px;">
+        <h3>Recent orders</h3>
+        ${orders.slice(0,8).map(o=>orderRowCard(o,'partner')).join('') || '<p class="faint">No orders yet.</p>'}
+      </div>`;
+  }
+
+  else if(tab === 'partners'){
+    const partners = await Data.listAllPartnersAdmin();
+    content.innerHTML = `
+      <div class="flex between center" style="margin-bottom:14px;">
+        <h3 style="margin:0;">Partners (${partners.length})</h3>
+        <button class="btn btn-primary btn-sm" data-action="admin-add-partner">+ Add partner</button>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Business</th><th>Location</th><th>Status</th><th>Priority</th><th>Featured</th><th>Rating</th><th></th></tr></thead><tbody>
+      ${partners.map(p => `<tr>
+        <td class="wrap-cell"><strong>${esc(p.businessName)}</strong><br><span class="faint small">${esc(p.ownerName||'')}</span></td>
+        <td>${esc(p.area||'')}, ${esc(p.city||'')}</td>
+        <td>${adminStatusBadge(p.status)}</td>
+        <td><input class="input" style="width:70px;padding:6px 8px;" type="number" value="${p.priority??100}" data-action="set-priority" data-id="${p.id}"></td>
+        <td><input type="checkbox" data-action="toggle-featured" data-id="${p.id}" ${p.featured?'checked':''}></td>
+        <td>${p.rating?p.rating.toFixed(1):'—'}</td>
+        <td class="gap-8">
+          <button class="btn btn-sm btn-light" data-action="admin-edit-partner" data-id="${p.id}">Edit</button>
+          ${p.status==='pending'?`<button class="btn btn-sm btn-primary" data-action="approve-partner" data-id="${p.id}">Approve</button>`:''}
+          ${p.status==='approved'?`<button class="btn btn-sm btn-danger" data-action="disable-partner" data-id="${p.id}">Disable</button>`:''}
+          ${p.status==='disabled'?`<button class="btn btn-sm btn-primary" data-action="approve-partner" data-id="${p.id}">Re-enable</button>`:''}
+          <button class="btn btn-sm btn-danger" data-action="delete-partner" data-id="${p.id}">Delete</button>
+        </td>
+      </tr>`).join('') || '<tr><td colspan="7">No partners yet.</td></tr>'}
+      </tbody></table></div>`;
+  }
+
+  else if(tab === 'services'){
+    if(!state.services.length) await Data.loadServices();
+    content.innerHTML = `
+      <div class="flex between center" style="margin-bottom:14px;">
+        <h3 style="margin:0;">Service catalog</h3>
+        <button class="btn btn-primary btn-sm" data-action="admin-add-service">+ Add service</button>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Icon</th><th>Name</th><th>Unit</th><th>Active</th><th></th></tr></thead><tbody>
+      ${state.services.map(s => `<tr>
+        <td style="font-size:20px;">${s.icon}</td><td>${esc(s.name)}</td><td>${esc(s.unit)}</td>
+        <td><input type="checkbox" data-action="toggle-service-active" data-id="${s.id}" ${s.active!==false?'checked':''}></td>
+        <td class="gap-8"><button class="btn btn-sm btn-light" data-action="admin-edit-service" data-id="${s.id}">Edit</button>
+        <button class="btn btn-sm btn-danger" data-action="delete-service" data-id="${s.id}">Delete</button></td>
+      </tr>`).join('')}
+      </tbody></table></div>
+      <div class="panel" style="margin-top:20px;">
+        <h3>Set partner prices</h3>
+        <p class="small faint">Choose a partner to edit their per-service prices.</p>
+        <div id="price-editor"></div>
+      </div>`;
+    renderPriceEditorPicker();
+  }
+
+  else if(tab === 'orders'){
+    const orders = await Data.listAllOrdersAdmin();
+    content.innerHTML = `
+      <div class="filters-bar">
+        ${['all',...ORDER_STATUSES,'cancelled'].map(s=>`<button class="filter-chip ${s==='all'?'active':''}" data-action="admin-order-filter" data-status="${s}">${s==='all'?'All':STATUS_LABEL[s]}</button>`).join('')}
+      </div>
+      <div id="admin-orders-list" class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Partner</th><th>Service</th><th>Total</th><th>Status</th><th></th></tr></thead>
+      <tbody>${orders.map(adminOrderRow).join('') || '<tr><td colspan="7">No orders yet.</td></tr>'}</tbody></table></div>`;
+    content.dataset.allOrders = JSON.stringify(orders.map(o=>o.id));
+    window.__adminOrders = orders;
+  }
+
+  else if(tab === 'users'){
+    const users = await Data.listUsersAdmin();
+    content.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>
+      ${users.map(u => `<tr>
+        <td>${esc(u.name||'—')}</td><td>${esc(u.email||'—')}</td>
+        <td><span class="badge badge-neutral">${esc(u.role||'customer')}</span></td>
+        <td>${u.disabled?'<span class="badge badge-danger">Disabled</span>':'<span class="badge badge-success">Active</span>'}</td>
+        <td>${u.role!=='admin' ? `<button class="btn btn-sm ${u.disabled?'btn-primary':'btn-danger'}" data-action="toggle-user-disabled" data-id="${u.id}" data-disabled="${!!u.disabled}">${u.disabled?'Enable':'Disable'}</button>` : ''}</td>
+      </tr>`).join('') || '<tr><td colspan="5">No users yet.</td></tr>'}
+    </tbody></table></div>`;
+  }
+
+  else if(tab === 'coupons'){
+    const coupons = await Data.listCoupons();
+    content.innerHTML = `
+      <div class="flex between center" style="margin-bottom:14px;"><h3 style="margin:0;">Coupons</h3><button class="btn btn-primary btn-sm" data-action="admin-add-coupon">+ New coupon</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Min order</th><th>Expiry</th><th>Used</th><th>Active</th><th></th></tr></thead><tbody>
+      ${coupons.map(c => `<tr>
+        <td class="mono">${esc(c.code)}</td><td>${c.type}</td><td>${c.type==='percent'?c.value+'%':rupee(c.value)}</td>
+        <td>${c.minOrder?rupee(c.minOrder):'—'}</td><td>${c.expiry||'—'}</td><td>${c.usedCount||0}${c.usageLimit?'/'+c.usageLimit:''}</td>
+        <td><input type="checkbox" data-action="toggle-coupon-active" data-id="${c.id}" ${c.active?'checked':''}></td>
+        <td class="gap-8"><button class="btn btn-sm btn-light" data-action="admin-edit-coupon" data-id="${c.id}">Edit</button>
+        <button class="btn btn-sm btn-danger" data-action="delete-coupon" data-id="${c.id}">Delete</button></td>
+      </tr>`).join('') || '<tr><td colspan="8">No coupons yet.</td></tr>'}
+      </tbody></table></div>`;
+  }
+
+  else if(tab === 'reports'){
+    const reports = await Data.listReportsAdmin();
+    content.innerHTML = reports.length ? `<div class="table-wrap"><table><thead><tr><th>Type</th><th>Target</th><th>Reason</th><th>Reported by</th><th>Status</th><th></th></tr></thead><tbody>
+      ${reports.map(r => `<tr>
+        <td>${esc(r.type)}</td><td>${esc(r.targetLabel||r.targetId)}</td><td class="wrap-cell">${esc(r.reason)}</td><td>${esc(r.reportedByName||'—')}</td>
+        <td>${r.status==='open'?'<span class="badge badge-warning">Open</span>':'<span class="badge badge-success">Resolved</span>'}</td>
+        <td>${r.status==='open'?`<button class="btn btn-sm btn-primary" data-action="resolve-report" data-id="${r.id}">Resolve</button>`:''}</td>
+      </tr>`).join('')}</tbody></table></div>`
+      : `<div class="empty-state"><div class="porthole porthole-lg">🚩</div><h3>No reports</h3><p>Flagged partners or orders will appear here.</p></div>`;
+  }
+}
+function adminStatusBadge(status){
+  const map = {approved:'success', pending:'warning', disabled:'danger'};
+  return `<span class="badge badge-${map[status]||'neutral'}">${esc(status)}</span>`;
+}
+function adminOrderRow(o){
+  return `<tr data-status="${o.status}">
+    <td class="mono">#${o.id.slice(0,6).toUpperCase()}</td><td>${esc(o.customerName)}</td><td>${esc(o.partnerName)}</td>
+    <td>${esc(o.serviceName)}</td><td>${rupee(o.total)}</td><td>${statusBadge(o.status)}</td>
+    <td><a class="btn btn-sm btn-light" href="#/order/${o.id}">View</a></td>
+  </tr>`;
+}
+async function renderPriceEditorPicker(){
+  const partners = (await Data.listAllPartnersAdmin()).filter(p=>p.status!=='pending' || true);
+  const box = $('#price-editor');
+  if(!box) return;
+  box.innerHTML = `<select class="select" id="price-partner-select" style="max-width:360px;">
+    <option value="">Select a partner…</option>
+    ${partners.map(p=>`<option value="${p.id}">${esc(p.businessName)}</option>`).join('')}
+  </select><div id="price-editor-body" style="margin-top:14px;"></div>`;
+  $('#price-partner-select').addEventListener('change', async e => {
+    const id = e.target.value;
+    const body = $('#price-editor-body');
+    if(!id){ body.innerHTML=''; return; }
+    const p = await Data.getPartner(id);
+    body.innerHTML = `<form id="price-form" data-id="${id}">
+      ${(p.categories||[]).map(c => `<div class="field"><label>${serviceIcon(c)} ${esc(serviceName(c))}</label><input class="input" type="number" min="0" name="${c}" value="${(p.prices||{})[c]||0}"></div>`).join('') || '<p class="faint">This partner has no assigned services.</p>'}
+      ${(p.categories||[]).length?'<button class="btn btn-primary" type="submit">Save prices</button>':''}
+    </form>`;
+    const f = $('#price-form');
+    if(f) f.addEventListener('submit', async ev => {
+      ev.preventDefault();
+      const fd = new FormData(ev.target);
+      const prices = {};
+      (p.categories||[]).forEach(c => prices[c] = parseFloat(fd.get(c))||0);
+      await Data.updatePartner(id, {prices});
+      toast('Prices updated', 'success');
+    });
+  });
+}
+
+/* ---------------------------------------------------------------
+   18. VIEW: AUTH PAGES
+   
+   --------------------------------------------------------------- */
+function viewLogin(_, app){
+  app.innerHTML = `<div class="wrap section text-center">
+    <form class="panel" id="login-form" style="max-width:400px;margin:0 auto;text-align:left;">
+      <h2 class="text-center">Welcome back</h2>
+      <div style="margin-bottom:16px;">
+    <button type="button"
+            class="btn btn-light btn-block"
+            id="google-login-btn">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+             width="18"
+             style="vertical-align:middle;margin-right:8px;">
+        Continue with Google
+    </button>
+</div>
+
+<div class="text-center" style="margin:12px 0;font-weight:600;color:#777;">
+    OR
+</div>
+      <div class="field"><label>Email</label><input class="input" type="email" name="email" required></div>
+      <div class="field"><label>Password</label><input class="input" type="password" name="password" required></div>
+      <button class="btn btn-primary btn-block" type="submit">Log in</button>
+      <p class="text-center small" style="margin-top:14px;"><a href="#/forgot" class="link-btn">Forgot password?</a></p>
+      <p class="text-center small">New to Washbit? <a href="#/signup" class="link-btn">Create an account</a></p>
+    </form>
+  </div>`;
+  $('#google-login-btn').addEventListener('click', signInWithGoogle);
+  $('#login-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.disabled = true; btn.textContent = 'Logging in…';
+    try{
+      const fd = new FormData(e.target);
+
+const user = await Auth.login(
+    fd.get('email'),
+    fd.get('password')
+);
+await user.reload();
+
+// Email verification check
+if (!auth.currentUser.emailVerified) {
+    await Auth.logout();
+    toast('Please verify your email before logging in.', 'error');
+    return;
+}
+
+toast('Welcome back!', 'success');
+location.hash = '#/';
+    }catch(err){ toast(friendlyAuthError(err), 'error'); btn.disabled=false; btn.textContent='Log in'; }
+  });
+}
+function viewSignup(_, app){
+  app.innerHTML = `<div class="wrap section text-center">
+    <form class="panel" id="signup-form" style="max-width:420px;margin:0 auto;text-align:left;">
+      <h2 class="text-center">Create your account</h2>
+      <div class="field"><label>Full name</label><input class="input" name="name" required></div>
+      <div class="field"><label>Email</label><input class="input" type="email" name="email" required></div>
+      <div class="field"><label>Phone</label><input class="input" name="phone" required></div>
+      <div class="field"><label>Password</label><input class="input" type="password" name="password" minlength="6" required></div>
+      <button class="btn btn-primary btn-block" type="submit">Sign up</button>
+      <p class="text-center small" style="margin-top:14px;">Already have an account? <a href="#/login" class="link-btn">Log in</a></p>
+    </form>
+  </div>`;
+  $('#signup-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.disabled = true; btn.textContent = 'Creating account…';
+    try{
+      const fd = new FormData(e.target);
+      await Auth.signup(fd.get('name'), fd.get('email'), fd.get('phone'), fd.get('password'));
+      toast('Verification email sent! Please verify your email before logging in.', 'success');
+await Auth.logout();
+      location.hash = '#/login';
+    }catch(err){console.log(err.code, err.message); toast(friendlyAuthError(err), 'error'); btn.disabled=false; btn.textContent='Sign up'; }
+  });
+}
+function viewForgot(_, app){
+  app.innerHTML = `<div class="wrap section text-center">
+    <form class="panel" id="forgot-form" style="max-width:400px;margin:0 auto;text-align:left;">
+      <h2 class="text-center">Reset your password</h2>
+      <div class="field"><label>Email</label><input class="input" type="email" name="email" required></div>
+      <button class="btn btn-primary btn-block" type="submit">Send reset link</button>
+    </form>
+  </div>`;
+  $('#forgot-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    try{
+      await Auth.resetPassword(new FormData(e.target).get('email'));
+      toast('Reset link sent — check your inbox', 'success');
+    }catch(err){ toast(friendlyAuthError(err), 'error'); }
+  });
+}
+function friendlyAuthError(err){
+  const code = err.code || '';
+  if(code.includes('user-not-found') || code.includes('wrong-password') || code.includes('invalid-credential')) return 'Incorrect email or password';
+  if(code.includes('email-already-in-use')) return 'An account already exists with that email';
+  if(code.includes('weak-password')) return 'Password should be at least 6 characters';
+  return err.message || 'Something went wrong';
+}
+
+/* ---------------------------------------------------------------
+   19. HEADER STATE
+   --------------------------------------------------------------- */
+function updateHeaderUser(){
+  const authActions = $('#auth-actions'), userActions = $('#user-actions');
+  const navCust = $('#nav-customer-dash'), navPart = $('#nav-partner-dash'), navAdmin = $('#nav-admin-dash');
+  [navCust, navPart, navAdmin].forEach(n => n.classList.add('hidden'));
+  if(state.user && state.profile){
+    authActions.classList.add('hidden');
+    userActions.classList.remove('hidden');
+    $('#header-name').textContent = (state.profile.name || state.user.email || '').split(' ')[0];
+    $('#header-avatar').textContent = (state.profile.name||state.user.email||'?').charAt(0).toUpperCase();
+    if(state.profile.role === 'customer') navCust.classList.remove('hidden');
+    if(state.profile.role === 'partner') navPart.classList.remove('hidden');
+    if(state.profile.role === 'admin') navAdmin.classList.remove('hidden');
+  }else{
+    authActions.classList.remove('hidden');
+    userActions.classList.add('hidden');
+  }
+}
+
+/* ---------------------------------------------------------------
+   20. GLOBAL EVENT DELEGATION
+   --------------------------------------------------------------- */
+document.addEventListener('click', async (e) => {
+  const t = e.target.closest('[data-action]');
+  if(!t) return;
+  const action = t.dataset.action;
+
+  if(action === 'toggle-nav'){ $('#main-nav').classList.toggle('open'); return; }
+  if(action === 'close-modal'){ closeModal(); return; }
+  if(action === 'home-search'){ goHomeSearch(); return; }
+  if(action === 'use-location'){ useLocation(); return; }
+  if(action === 'use-location-list'){ useLocation(loadPartnerResults); return; }
+  if(action === 'pl-search'){ currentFilters.text = $('#pl-text').value; const cat=$('#pl-cat').value; location.hash = '#/partners' + (cat?('?cat='+cat):'') ; setTimeout(loadPartnerResults,0); return; }
+  if(action === 'pl-sort'){ currentFilters.sort = t.dataset.sort; $$('.filter-chip[data-action=pl-sort]').forEach(c=>c.classList.toggle('active', c===t)); if($('#pl-advanced-sort')) $('#pl-advanced-sort').value=''; loadPartnerResults(); return; }
+  if(action === 'pl-toggle-open'){ currentFilters.openOnly = !currentFilters.openOnly; t.classList.toggle('active', currentFilters.openOnly); loadPartnerResults(); return; }
+
+  if(action === 'toggle-user-menu'){
+    openModal(`<h3>Hi, ${esc(state.profile.name||'there')}</h3>
+      <p class="small faint">${esc(state.profile.role)} account · ${esc(state.user.email)}</p>
+      <div class="grid" style="grid-template-columns:1fr;gap:10px;margin-top:14px;">
+        ${state.profile.role==='customer'?'<a href="#/dashboard/orders" class="btn btn-light" data-action="close-modal">My orders</a>':''}
+        ${state.profile.role==='partner'?'<a href="#/partner/orders" class="btn btn-light" data-action="close-modal">Partner dashboard</a>':''}
+        ${state.profile.role==='admin'?'<a href="#/admin/overview" class="btn btn-light" data-action="close-modal">Admin panel</a>':''}
+        <button class="btn btn-danger" data-action="logout">Log out</button>
+      </div>`);
+    return;
+  }
+  if(action === 'logout'){ closeModal(); await Auth.logout(); toast('Logged out', 'info'); return; }
+
+  if(action === 'report-partner'){
+    const id = t.dataset.id, name = t.dataset.name;
+    if(!state.user){ toast('Log in to report a partner', 'info'); location.hash='#/login'; return; }
+    openModal(`<h3>Report ${esc(name)}</h3>
+      <form id="report-form">
+        <div class="field"><label>Reason</label><textarea class="textarea" name="reason" required placeholder="Tell us what went wrong"></textarea></div>
+        <button class="btn btn-danger btn-block" type="submit">Submit report</button>
+      </form>`);
+    $('#report-form').addEventListener('submit', async ev => {
+      ev.preventDefault();
+      await Data.createReport({type:'partner', targetId:id, targetLabel:name, reason: new FormData(ev.target).get('reason'), reportedBy: state.user.uid, reportedByName: state.profile.name});
+      toast('Report submitted — Washbit will review it', 'success');
+      closeModal();
+    });
+    return;
+  }
+
+  if(action === 'advance-order'){
+    await Data.updateOrderStatus(t.dataset.id, t.dataset.next);
+    toast('Order status updated', 'success');
+    router();
+    return;
+  }
+  if(action === 'cancel-order'){
+    if(!confirm('Cancel this order?')) return;
+    await Data.updateOrderStatus(t.dataset.id, 'cancelled');
+    toast('Order cancelled', 'info');
+    router();
+    return;
+  }
+  if(action === 'review-order'){
+    openModal(`<h3>Rate your experience</h3>
+      <form id="review-form">
+        <div class="field"><label>Rating</label>${starInputHtml('rating', 5)}</div>
+        <div class="field"><label>Comment</label><textarea class="textarea" name="comment" placeholder="How was the service?"></textarea></div>
+        <button class="btn btn-primary btn-block" type="submit">Submit review</button>
+      </form>`);
+    $$('.star-input span').forEach(s => s.addEventListener('click', () => {
+      const v = parseInt(s.dataset.star,10);
+      $('.star-input').querySelectorAll('span').forEach((el,i)=>el.classList.toggle('active', i<v));
+      $('.star-input').nextElementSibling.value = v;
+    }));
+    $('#review-form').addEventListener('submit', async ev => {
+      ev.preventDefault();
+      const fd = new FormData(ev.target);
+      await Data.createReview({orderId:t.dataset.id, partnerId:t.dataset.partner, customerId:state.user.uid, customerName:state.profile.name, rating: parseInt(fd.get('rating')||'5',10), comment: fd.get('comment')});
+      toast('Thanks for the review!', 'success');
+      closeModal(); router();
+    });
+    return;
+  }
+
+  if(action === 'add-address'){
+    openModal(`<h3>Add address</h3><form id="addr-form">
+      <div class="field"><label>Label</label><input class="input" name="label" placeholder="Home / Work" required></div>
+      <div class="field"><label>Address line</label><input class="input" name="line1" required></div>
+      <div class="row2"><div class="field"><label>Area</label><input class="input" name="area"></div><div class="field"><label>City</label><input class="input" name="city" required></div></div>
+      <div class="field"><label>PIN code</label><input class="input" name="pincode"></div>
+      <button class="btn btn-primary btn-block" type="submit">Save address</button></form>`);
+    $('#addr-form').addEventListener('submit', async ev => {
+      ev.preventDefault();
+      const fd = new FormData(ev.target);
+      const addr = {label:fd.get('label'), line1:fd.get('line1'), area:fd.get('area'), city:fd.get('city'), pincode:fd.get('pincode')};
+      const addresses = [...(state.profile.addresses||[]), addr];
+      await Data.updateUserProfile(state.user.uid, {addresses});
+      state.profile.addresses = addresses;
+      toast('Address saved', 'success'); closeModal(); router();
+    });
+    return;
+  }
+  if(action === 'remove-address'){
+    const idx = parseInt(t.dataset.idx,10);
+    const addresses = (state.profile.addresses||[]).filter((_,i)=>i!==idx);
+    await Data.updateUserProfile(state.user.uid, {addresses});
+    state.profile.addresses = addresses;
+    toast('Address removed', 'info'); router();
+    return;
+  }
+
+  /* ---------- ADMIN ACTIONS ---------- */
+  if(action === 'set-priority'){ /* handled on change, see below */ return; }
+  if(action === 'admin-add-partner'){ openAdminPartnerModal(null); return; }
+  if(action === 'admin-edit-partner'){ const p = await Data.getPartner(t.dataset.id); openAdminPartnerModal(p); return; }
+  if(action === 'approve-partner'){ await Data.updatePartner(t.dataset.id, {status:'approved'}); const p = await Data.getPartner(t.dataset.id); await db.collection('users').doc(p.uid).update({role:'partner'}).catch(()=>{}); toast('Partner approved', 'success'); router(); return; }
+  if(action === 'disable-partner'){ await Data.updatePartner(t.dataset.id, {status:'disabled'}); toast('Partner disabled', 'info'); router(); return; }
+  if(action === 'delete-partner'){ if(confirm('Delete this partner permanently?')){ await Data.deletePartner(t.dataset.id); toast('Partner deleted', 'info'); router(); } return; }
+
+  if(action === 'admin-add-service'){ openAdminServiceModal(null); return; }
+  if(action === 'admin-edit-service'){ const s = state.services.find(x=>x.id===t.dataset.id); openAdminServiceModal(s); return; }
+  if(action === 'delete-service'){ if(confirm('Delete this service?')){ await Data.deleteService(t.dataset.id); await Data.loadServices(); toast('Service deleted', 'info'); router(); } return; }
+
+  if(action === 'admin-add-coupon'){ openAdminCouponModal(null); return; }
+  if(action === 'admin-edit-coupon'){ const list = await Data.listCoupons(); openAdminCouponModal(list.find(c=>c.id===t.dataset.id)); return; }
+  if(action === 'delete-coupon'){ if(confirm('Delete this coupon?')){ await Data.deleteCoupon(t.dataset.id); toast('Coupon deleted', 'info'); router(); } return; }
+
+  if(action === 'resolve-report'){ await Data.updateReport(t.dataset.id, {status:'resolved'}); toast('Report resolved', 'success'); router(); return; }
+
+  if(action === 'admin-order-filter'){
+    $$('.filter-chip[data-action=admin-order-filter]').forEach(c=>c.classList.toggle('active', c===t));
+    const status = t.dataset.status;
+    const orders = window.__adminOrders || [];
+    const filtered = status==='all' ? orders : orders.filter(o=>o.status===status);
+    $('#admin-orders-list tbody').innerHTML = filtered.map(adminOrderRow).join('') || '<tr><td colspan="7">No orders match.</td></tr>';
+    return;
+  }
+});
+
+document.addEventListener('change', async (e) => {
+  const t = e.target.closest('[data-action]');
+  if(!t) return;
+  const action = t.dataset.action;
+  if(action === 'set-priority'){
+    await Data.updatePartner(t.dataset.id, {priority: parseInt(t.value||'100',10)});
+    toast('Priority updated', 'success');
+    return;
+  }
+  if(action === 'toggle-featured'){
+    await Data.updatePartner(t.dataset.id, {featured: t.checked});
+    toast(t.checked ? 'Marked as featured' : 'Removed from featured', 'success');
+    return;
+  }
+  if(action === 'toggle-service-active'){
+    await Data.updateService(t.dataset.id, {active: t.checked});
+    toast('Service updated', 'success');
+    return;
+  }
+  if(action === 'toggle-coupon-active'){
+    await Data.updateCoupon(t.dataset.id, {active: t.checked});
+    toast('Coupon updated', 'success');
+    return;
+  }
+  if(action === 'toggle-user-disabled'){
+    const disabled = t.dataset.disabled === 'true';
+    await db.collection('users').doc(t.dataset.id).update({disabled: !disabled});
+    toast(!disabled ? 'User disabled' : 'User enabled', 'success');
+    router();
+    return;
+  }
+});
+
+/* Admin modals */
+function openAdminPartnerModal(p){
+  const isEdit = !!p;
+  openModal(`<h3>${isEdit?'Edit partner':'Add partner'}</h3>
+    <form id="ap-form" class="wide">
+      <div class="row2">
+        <div class="field"><label>Business name</label><input class="input" name="businessName" value="${esc(p?.businessName||'')}" required></div>
+        <div class="field"><label>Owner name</label><input class="input" name="ownerName" value="${esc(p?.ownerName||'')}"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Phone</label><input class="input" name="phone" value="${esc(p?.phone||'')}"></div>
+        <div class="field"><label>Email</label><input class="input" name="email" value="${esc(p?.email||'')}"></div>
+      </div>
+      <div class="row3">
+        <div class="field"><label>City</label><input class="input" name="city" value="${esc(p?.city||'')}" required></div>
+        <div class="field"><label>Area</label><input class="input" name="area" value="${esc(p?.area||'')}"></div>
+        <div class="field"><label>PIN</label><input class="input" name="pincode" value="${esc(p?.pincode||'')}"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Latitude</label><input class="input" type="number" step="any" name="lat" value="${p?.lat??''}"></div>
+        <div class="field"><label>Longitude</label><input class="input" type="number" step="any" name="lng" value="${p?.lng??''}"></div>
+      </div>
+      <div class="field"><label>Description</label><textarea class="textarea" name="description">${esc(p?.description||'')}</textarea></div>
+      <div class="field"><label>Services offered</label><div class="gap-8 wrap">
+        ${state.services.map(s=>`<label class="check-row"><input type="checkbox" name="cat" value="${s.id}" ${(p?.categories||[]).includes(s.id)?'checked':''}> ${s.icon} ${esc(s.name)}</label>`).join('')}
+      </div></div>
+      ${isEdit?'':'<div class="field"><label>Status</label><select class="select" name="status"><option value="approved">Approved</option><option value="pending">Pending</option></select></div>'}
+      <button class="btn btn-primary btn-block" type="submit">${isEdit?'Save changes':'Create partner'}</button>
+    </form>`, true);
+  $('#ap-form').addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const fd = new FormData(ev.target);
+    const data = {
+      businessName: fd.get('businessName'), ownerName: fd.get('ownerName'), phone: fd.get('phone'), email: fd.get('email'),
+      city: fd.get('city'), area: fd.get('area'), pincode: fd.get('pincode'),
+      lat: fd.get('lat')?parseFloat(fd.get('lat')):null, lng: fd.get('lng')?parseFloat(fd.get('lng')):null,
+      description: fd.get('description'), categories: fd.getAll('cat'),
+    };
+    if(isEdit){
+      await Data.updatePartner(p.id, data);
+      toast('Partner updated', 'success');
+    }else{
+      data.status = fd.get('status') || 'approved';
+      data.uid = 'admin-created-' + Date.now();
+      await Data.createPartnerApplication(data);
+      toast('Partner created', 'success');
+    }
+    closeModal(); router();
+  });
+}
+function openAdminServiceModal(s){
+  const isEdit = !!s;
+  openModal(`<h3>${isEdit?'Edit service':'Add service'}</h3>
+    <form id="as-form">
+      <div class="field"><label>Service ID (slug, unique)</label><input class="input" name="id" value="${esc(s?.id||'')}" ${isEdit?'disabled':''} required placeholder="e.g. curtain_cleaning"></div>
+      <div class="field"><label>Name</label><input class="input" name="name" value="${esc(s?.name||'')}" required></div>
+      <div class="row2">
+        <div class="field"><label>Icon (emoji)</label><input class="input" name="icon" value="${esc(s?.icon||'🧺')}"></div>
+        <div class="field"><label>Unit</label><input class="input" name="unit" value="${esc(s?.unit||'per item')}"></div>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">${isEdit?'Save changes':'Add service'}</button>
+    </form>`);
+  $('#as-form').addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const fd = new FormData(ev.target);
+    const data = {name: fd.get('name'), icon: fd.get('icon'), unit: fd.get('unit'), active:true, order: state.services.length+1};
+    if(isEdit){ await Data.updateService(s.id, data); }
+    else{ await Data.createService(fd.get('id').trim().toLowerCase().replace(/\s+/g,'_'), data); }
+    await Data.loadServices();
+    toast('Service saved', 'success'); closeModal(); router();
+  });
+}
+function openAdminCouponModal(c){
+  const isEdit = !!c;
+  openModal(`<h3>${isEdit?'Edit coupon':'New coupon'}</h3>
+    <form id="ac-form">
+      <div class="field"><label>Code</label><input class="input" name="code" value="${esc(c?.code||'')}" required style="text-transform:uppercase;"></div>
+      <div class="row2">
+        <div class="field"><label>Type</label><select class="select" name="type"><option value="percent" ${c?.type==='percent'?'selected':''}>Percent off</option><option value="flat" ${c?.type==='flat'?'selected':''}>Flat amount off</option></select></div>
+        <div class="field"><label>Value</label><input class="input" type="number" name="value" value="${c?.value??''}" required></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Min order (optional)</label><input class="input" type="number" name="minOrder" value="${c?.minOrder??''}"></div>
+        <div class="field"><label>Max discount (optional)</label><input class="input" type="number" name="maxDiscount" value="${c?.maxDiscount??''}"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Expiry date (optional)</label><input class="input" type="date" name="expiry" value="${c?.expiry||''}"></div>
+        <div class="field"><label>Usage limit (optional)</label><input class="input" type="number" name="usageLimit" value="${c?.usageLimit??''}"></div>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">${isEdit?'Save changes':'Create coupon'}</button>
+    </form>`);
+  $('#ac-form').addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const fd = new FormData(ev.target);
+    const data = {
+      code: fd.get('code').toUpperCase().trim(), type: fd.get('type'), value: parseFloat(fd.get('value')),
+      minOrder: fd.get('minOrder')?parseFloat(fd.get('minOrder')):null,
+      maxDiscount: fd.get('maxDiscount')?parseFloat(fd.get('maxDiscount')):null,
+      expiry: fd.get('expiry')||null, usageLimit: fd.get('usageLimit')?parseInt(fd.get('usageLimit'),10):null,
+      active: true, usedCount: c?.usedCount||0
+    };
+    if(isEdit) await Data.updateCoupon(c.id, data); else await Data.createCoupon(data);
+    toast('Coupon saved', 'success'); closeModal(); router();
+  });
+}
+
+/* ---------------------------------------------------------------
+   21. INIT
+   --------------------------------------------------------------- */
+async function initApp(){
+  $('#year').textContent = new Date().getFullYear();
+  window.addEventListener('hashchange', router);
+
+  if(!initFirebase()){
+    $('#app').innerHTML = viewSetupScreen();
+    return;
+  }
+
+  await Data.seedServicesIfEmpty().catch(()=>{});
+  await Data.loadServices();
+
+  auth.onAuthStateChanged(async (user) => {
+    state.user = user;
+    if(user){
+      let profile = await Data.getUserProfile(user.uid);
+      if(!profile){
+        await Data.createUserProfile(user.uid, {name:user.displayName||'', email:user.email||''});
+        profile = await Data.getUserProfile(user.uid);
+      }
+      if(profile.disabled){
+        toast('Your account has been disabled. Contact support.', 'error');
+        await auth.signOut();
+        state.user = null; state.profile = null; state.partnerDoc = null;
+        updateHeaderUser(); router();
+        return;
+      }
+      state.profile = profile;
+      state.partnerDoc = profile.role === 'partner' || profile.role === 'admin' ? await Data.getPartnerByUid(user.uid) : await Data.getPartnerByUid(user.uid);
+    }else{
+      state.profile = null; state.partnerDoc = null;
+    }
+    state.authReady = true;
+    updateHeaderUser();
+    router();
+  });
+
+  router();
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
