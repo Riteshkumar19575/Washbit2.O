@@ -3,6 +3,7 @@ const { db } = require("./firebase");
 
 module.exports = async (req, res) => {
   try {
+    console.log("STEP 1");
     if (req.method !== "POST") {
       return res.status(405).json({ error: "Method not allowed" });
     }
@@ -20,14 +21,16 @@ module.exports = async (req, res) => {
     const expiresAt = Date.now() + 5 * 60 * 1000;
 
     // Save OTP in Firestore
+    console.log("STEP 2");
     await db.collection("otp_codes").doc(email).set({
       otp,
       email,
       createdAt: Date.now(),
       expiresAt,
     });
-
+console.log("STEP 3");
     // Brevo API
+    console.log("STEP 4");
     const apiInstance = new brevo.TransactionalEmailsApi();
     apiInstance.setApiKey(
       brevo.TransactionalEmailsApiApiKeys.apiKey,
