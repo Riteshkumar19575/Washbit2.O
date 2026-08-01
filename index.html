@@ -153,7 +153,15 @@ p{margin:0 0 1em;color:var(--ink-soft);}
 /* Header */
 #site-header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);height:var(--header-h);}
 #site-header .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:18px;}
-.logo{display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:700;font-size:23px;color:var(--ink);letter-spacing:-.01em;}
+.logo{
+    display:flex;
+    align-items:center;
+}
+.logo-img{
+    height:85px;
+    width:auto;
+    display:block;
+}
 .logo .brand-bit{background:linear-gradient(90deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;}
 .logo .brand-dot{color:var(--accent);}
 .logo .mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;box-shadow:0 6px 14px rgba(37,99,235,.30);}
@@ -372,7 +380,9 @@ footer a:hover{opacity:1;text-decoration:underline;}
 
 <header id="site-header">
   <div class="wrap">
-    <a href="#/" class="logo"><span class="mark"></span> Wash<span class="brand-bit">bit</span><span class="brand-dot">.</span></a>
+    <a href="#" class="logo">
+ <img src="./logo.png" alt="Washbit" class="logo-img">
+</a>
     <nav class="main-nav" id="main-nav">
       <a href="#/partners" data-route="/partners">Find partners</a>
       <a href="#/how-it-works" data-route="/how-it-works">How it works</a>
@@ -403,8 +413,10 @@ footer a:hover{opacity:1;text-decoration:underline;}
   <div class="wrap">
     <div class="foot-grid">
       <div>
-        <div class="logo" style="color:#fff;margin-bottom:10px;"><span class="mark"></span>Wash<span class="brand-bit">bit</span><span class="brand-dot">.</span></div>
-        <p>The booking layer for local care services — laundry, dry cleaning, stitching, shoe & bag care, carpets and blankets — done by verified partners near you.</p>
+        <h4>About Washbit</h4>
+        <p>
+Washbit connects customers with trusted local service providers for laundry, dry cleaning, ironing, stitching & alteration, shoe & bag care, carpet cleaning, and blanket cleaning.
+</p>
       </div>
       <div>
         <h4>Services</h4>
@@ -422,7 +434,7 @@ footer a:hover{opacity:1;text-decoration:underline;}
       <div>
         <h4>Support</h4>
         <p><a href="#/dashboard/orders">Track an order</a></p>
-        <p>support@washbit.app</p>
+        <p>support.washbit@gmail.com</p>
       </div>
     </div>
     <div class="foot-bottom">
