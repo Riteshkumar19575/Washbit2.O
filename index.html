@@ -444,14 +444,14 @@ footer a:hover{opacity:1;text-decoration:underline;}
    0. CONSTANTS
    --------------------------------------------------------------- */
 const DEFAULT_SERVICES = [
-  {id:'laundry',          name:'Laundry',                   icon:'👕', unit:'per kg',    order:1},
-  {id:'dry_cleaning',     name:'Dry Cleaning',              icon:'🧥', unit:'per item',  order:2},
-  {id:'ironing',          name:'Ironing',                   icon:'🔥', unit:'per item',  order:3},
-  {id:'stitching',        name:'Stitching & Alteration',    icon:'🧵', unit:'per item',  order:4},
+  {id:'laundry',          name:'Laundry',                   icon:'👕', unit:'per Piece',    order:1},
+  {id:'dry_cleaning',     name:'Dry Cleaning',              icon:'🧥', unit:'per Piece',  order:2},
+  {id:'ironing',          name:'Ironing',                   icon:'🔥', unit:'per Piece',  order:3},
+  {id:'stitching',        name:'Stitching & Alteration',    icon:'🧵', unit:'per Piece',  order:4},
   {id:'shoe_cleaning',    name:'Shoe Cleaning & Repair',    icon:'👟', unit:'per pair',  order:5},
   {id:'bag_cleaning',     name:'Bag Cleaning',              icon:'👜', unit:'per item',  order:6},
   {id:'carpet_cleaning',  name:'Carpet Cleaning',           icon:'🧹', unit:'per sq.ft', order:7},
-  {id:'blanket_cleaning', name:'Blanket Cleaning',          icon:'🛏️', unit:'per item',  order:8},
+  {id:'blanket_cleaning', name:'Blanket Cleaning',          icon:'🛏️', unit:'per Piece',  order:8},
 ];
 
 const ORDER_STATUSES = ['placed','accepted','picked_up','in_progress','ready','delivered'];
@@ -569,9 +569,7 @@ const Data = {
   },
   async loadServices(){
     try{
-      const snap = await db.collection('services').orderBy('order').get();
-      if(snap.empty){ state.services = DEFAULT_SERVICES.slice(); return; }
-      state.services = snap.docs.map(d => ({id:d.id, ...d.data()}));
+      state.services = DEFAULT_SERVICES.slice();
     }catch(e){ state.services = DEFAULT_SERVICES.slice(); }
   },
   async getUserProfile(uid){
@@ -900,7 +898,7 @@ async function viewHome(_, app){
   <section class="section-tight">
     <div class="wrap">
       <div class="flex between center" style="margin-bottom:18px;">
-        <h2 style="margin:0;">What do you need done?</h2>
+        <h2 style="margin:0;">Choose a Service</h2>
         <a href="#/partners" class="link-btn">View all partners →</a>
       </div>
       <div class="cat-grid">
