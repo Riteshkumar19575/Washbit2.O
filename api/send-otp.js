@@ -1,4 +1,4 @@
-const brevo = require("@getbrevo/brevo");
+// const brevo = require("@getbrevo/brevo");
 const { db } = require("./firebase");
 
 module.exports = async (req, res) => {
@@ -31,26 +31,26 @@ module.exports = async (req, res) => {
 console.log("STEP 3");
     // Brevo API
     console.log("STEP 4");
-    const apiInstance = new brevo.TransactionalEmailsApi();
-    apiInstance.setApiKey(
-      brevo.TransactionalEmailsApiApiKeys.apiKey,
-      process.env.BREVO_API_KEY
-    );
+    // const apiInstance = new brevo.TransactionalEmailsApi();
+    // apiInstance.setApiKey(
+    //   brevo.TransactionalEmailsApiApiKeys.apiKey,
+    //   process.env.BREVO_API_KEY
+    // );
 
-    await apiInstance.sendTransacEmail({
-      sender: {
-        email: "riteshkumar19575@gmail.com",
-        name: "Washbit",
-      },
-      to: [{ email }],
-      subject: "Your Washbit OTP",
-      htmlContent: `
-        <h2>Washbit Email Verification</h2>
-        <p>Your OTP is:</p>
-        <h1>${otp}</h1>
-        <p>This OTP is valid for 5 minutes.</p>
-      `,
-    });
+    // await apiInstance.sendTransacEmail({
+    //   sender: {
+    //     email: "riteshkumar19575@gmail.com",
+    //     name: "Washbit",
+    //   },
+    //   to: [{ email }],
+    //   subject: "Your Washbit OTP",
+    //   htmlContent: `
+    //     <h2>Washbit Email Verification</h2>
+    //     <p>Your OTP is:</p>
+    //     <h1>${otp}</h1>
+    //     <p>This OTP is valid for 5 minutes.</p>
+    //   `,
+    // });
 
     return res.json({
       success: true,
