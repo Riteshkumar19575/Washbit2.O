@@ -1758,14 +1758,7 @@ const user = await Auth.login(
     fd.get('email'),
     fd.get('password')
 );
-await user.reload();
-
-// Email verification check
-if (!auth.currentUser.emailVerified) {
-    await Auth.logout();
-    toast('Please verify your email before logging in.', 'error');
-    return;
-}
+await user.reload();-
 
 toast('Welcome back!', 'success');
 location.hash = '#/';
