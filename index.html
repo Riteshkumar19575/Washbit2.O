@@ -741,7 +741,11 @@ const Data = {
   async listUsersAdmin(){
     const snap = await db.collection('users').get();
     return snap.docs.map(d=>({id:d.id,...d.data()}));
-  },
+  },  
+  async deleteUser(id){
+  if(!id) throw new Error('User ID is missing');
+  await db.collection('users').doc(id).delete();
+},
   async createReport(data){
     await db.collection('reports').add({status:'open', createdAt: firebase.firestore.FieldValue.serverTimestamp(), ...data});
   },
@@ -1702,7 +1706,39 @@ async function viewAdmin(tab, app){
         <td>${esc(u.name||'—')}</td><td>${esc(u.email||'—')}</td>
         <td><span class="badge badge-neutral">${esc(u.role||'customer')}</span></td>
         <td>${u.disabled?'<span class="badge badge-danger">Disabled</span>':'<span class="badge badge-success">Active</span>'}</td>
-        <td>${u.role!=='admin' ? `<button class="btn btn-sm ${u.disabled?'btn-primary':'btn-danger'}" data-action="toggle-user-disabled" data-id="${u.id}" data-disabled="${!!u.disabled}">${u.disabled?'Enable':'Disable'}</button>` : ''}</td>
+        <td>
+  ${u.role !== 'admin' ? `
+    <button
+      class="btn btn-sm ${u.disabled ? 'btn-primary' : 'btn-danger'}"
+      data-action="toggle-user-disabled"
+      data-id="${u.id}"
+      data-disabled="${!!u.disabled}">
+      ${u.disabled ? 'Enable' : 'Disable'}
+    </button>
+
+    <button
+      class="btn btn-sm btn-danger"
+      data-action="delete-user"
+      data-id="${u.id}">
+      Delete
+    </button>
+  ` : ''}
+</td>
+        data-action="toggle-user-disabled"
+        data-id="${u.id}"
+        data-disabled="${!!u.disabled}">
+        ${u.disabled ? 'Enable' : 'Disable'}
+      </button>
+
+      <button
+        class="btn btn-sm btn-danger"
+        data-action="delete-user"
+        data-id="${u.id}">
+        Delete
+      </button>
+    </div>
+  ` : ''}
+</td>
       </tr>`).join('') || '<tr><td colspan="5">No users yet.</td></tr>'}
     </tbody></table></div>`;
   }
