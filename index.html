@@ -318,7 +318,30 @@ td.wrap-cell{white-space:normal;}
 .stat-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;}
 .stat-card .num{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--primary-dark);}
 .stat-card .lbl{font-size:12.5px;color:var(--ink-faint);font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+#page-loading{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:#F6F9FC;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
+.page-spinner{
+  width:36px;
+  height:36px;
+  border:4px solid #E3E9F2;
+  border-top-color:#2563EB;
+  border-radius:50%;
+  animation:pageSpin .8s linear infinite;
+}
+
+@keyframes pageSpin{
+  to{
+    transform:rotate(360deg);
+  }
+}
 /* Modal */
 #modal-root{position:fixed;inset:0;z-index:200;display:none;}
 #modal-root.open{display:block;}
@@ -408,6 +431,9 @@ footer a:hover{opacity:1;text-decoration:underline;}
 </header>
 
 <main id="app"></main>
+<div id="page-loading">
+  <div class="page-spinner"></div>
+</div>
 
 <footer>
   <div class="wrap">
@@ -451,6 +477,7 @@ Washbit connects customers with trusted local service providers for laundry, dry
    Views → Event delegation → Init
    ================================================================ */
 'use strict';
+
 
 /* ---------------------------------------------------------------
    0. CONSTANTS
@@ -2240,6 +2267,7 @@ async function initApp(){
     state.authReady = true;
     updateHeaderUser();
     router();
+    document.getElementById('page-loading').style.display = 'none';
   });
 
   router();
