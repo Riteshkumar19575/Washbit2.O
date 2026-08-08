@@ -1344,6 +1344,23 @@ async function viewOrderDetail(id, app){
       </div>
       <div class="panel">
         <h3>Details</h3>
+        <div id="delivery-photo-section"></div>
+        ${isOwnerPartner && o.status === 'ready' ? `
+  <button
+    type="button"
+    class="btn btn-primary"
+    data-action="capture-delivery-photo"
+    style="margin-top:12px;">
+    📸 Capture Delivery Photo
+  </button>
+
+  <input
+    type="file"
+    id="delivery-photo-input"
+    accept="image/*"
+    capture="environment"
+    style="display:none;">
+` : ''}
         <div class="flex between" style="margin-bottom:8px;"><span class="muted">Service</span><span>${serviceIcon(o.serviceId)} ${esc(o.serviceName)}</span></div>
         <div class="flex between" style="margin-bottom:8px;"><span class="muted">Quantity</span><span>${o.qty}</span></div>
         <div class="flex between" style="margin-bottom:8px;"><span class="muted">Pickup</span><span>${esc(o.pickupDate)} · ${esc(o.pickupSlot)}</span></div>
@@ -1999,7 +2016,17 @@ document.addEventListener('click', async (e) => {
     });
     return;
   }
+if(action === 'capture-delivery-photo'){
+  const input = document.getElementById('delivery-photo-input');
 
+  if(!input){
+    toast('Camera is not available', 'error');
+    return;
+  }
+
+  input.click();
+  return;
+}
   if(action === 'advance-order'){
     await Data.updateOrderStatus(t.dataset.id, t.dataset.next);
     toast('Order status updated', 'success');
